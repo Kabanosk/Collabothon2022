@@ -24,23 +24,22 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
   List<String> _selectedItems = [];
+  bool _categoryView = true;
 
-  void _showMultiSelect() async {
+  void _showMultiSelect(int index) async {
     // a list of selectable items
     // these items can be hard-coded or dynamically fetched from a database/API
-    final List<String> _items = [
-      'Flutter',
-      'Node.js',
-      'React Native',
-      'Java',
-      'Docker',
-      'MySQL'
+    final List<List<String>> _items = [
+      ['Medicine', 'Food', 'Fuel', 'Water', 'Clothing', 'Beer'],
+      ['Hostel', 'Hotel', 'Apartment', 'Flat'],
+      ['Bus station', 'Train station', 'Airport'],
+      ['Charities', 'Church', 'UA embassy', 'City council']
     ];
 
     final List<String>? results = await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return MultiSelect(items: _items);
+        return MultiSelect(items: _items[index]);
       },
     );
 
@@ -49,65 +48,105 @@ class _MainViewState extends State<MainView> {
       setState(() {
         _selectedItems = results;
         selectedItems = results;
+        _categoryView = false;
       });
     }
     print(results);
   }
 
+  void goBack() async {
+    setState(() {
+      _categoryView = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> categories = <String>[
-      'food',
-      'shower',
+      'supplies',
+      'accomodation',
       'transport',
-      'shop nearby'
+      'social help'
     ];
     return Scaffold(
-      appBar: AppBar(title: const Text('ukrainian tinder'), actions: [
-        const IconButton(
-          onPressed: null,
-          icon: Icon(Icons.list),
-          tooltip: 'View Favourites',
-        )
-      ]),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Map',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Profile',
-          ),
-        ],
-      ),
-      body: ListView.builder(
-        itemCount: categories.length * 2,
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, i) {
-          if (i.isOdd) return const Divider();
+        appBar: AppBar(
+          title: const Text('ukrainian tinder'),
+          actions: [
+            const IconButton(
+              onPressed: null,
+              icon: Icon(Icons.list),
+              tooltip: 'View Favourites',
+            ),
+          ],
+          leading: !_categoryView
+              ? IconButton(
+                  onPressed: goBack,
+                  icon: Icon(Icons.arrow_back),
+                  tooltip: 'Go back',
+                )
+              : null,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: [
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.map),
+              label: 'Map',
+            ),
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Profile',
+            ),
+          ],
+        ),
+        body: _categoryView
+            ? ListView.builder(
+                itemCount: categories.length * 2,
+                padding: const EdgeInsets.all(16.0),
+                itemBuilder: (context, i) {
+                  if (i.isOdd) return const Divider();
 
-          final index = i ~/ 2;
+                  final index = i ~/ 2;
 
-          return ListTile(
-              title: Text(
-                categories[index],
-                style: const TextStyle(fontSize: 18, color: Color(0xFF000000)),
-              ),
-              trailing: const Icon(
-                Icons.add,
-                color: Colors.blueAccent,
-                semanticLabel: 'More',
-              ),
-              onTap: _showMultiSelect);
-        },
-      ),
-    );
+                  return ListTile(
+                      title: Text(
+                        categories[index],
+                        style: const TextStyle(
+                            fontSize: 18, color: Color(0xFF000000)),
+                      ),
+                      leading: const Icon(
+                        Icons.keyboard_double_arrow_right_sharp,
+                        color: Colors.blueAccent,
+                        semanticLabel: 'Filter categories',
+                      ),
+                      onTap: () => _showMultiSelect(index));
+                },
+              )
+            : ListView.builder(
+                itemCount: _selectedItems.length * 2,
+                padding: const EdgeInsets.all(16.0),
+                itemBuilder: (context, i) {
+                  if (i.isOdd) return const Divider();
+
+                  final index = i ~/ 2;
+
+                  return ListTile(
+                      title: Text(
+                        _selectedItems[index],
+                        style: const TextStyle(
+                            fontSize: 18, color: Color(0xFF000000)),
+                      ),
+                      trailing: const Icon(
+                        Icons.add,
+                        color: Colors.blueAccent,
+                        semanticLabel: 'More',
+                      ),
+                      onTap:
+                          null); // TO DO: clicking this should bring info about the location
+                }));
   }
 }
 
