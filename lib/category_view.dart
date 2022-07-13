@@ -1,29 +1,15 @@
 import 'package:flutter/material.dart';
-import './category_view.dart';
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      // Remove the const from here
-      title: 'Startup Name Generator',
-      home: MainView(), // And add the const back here.
-    );
-  }
-}
 
 List<String> selectedItems = [];
 
-class MainView extends StatefulWidget {
-  const MainView({Key? key}) : super(key: key);
+class CategoryView extends StatefulWidget {
+  const CategoryView({Key? key}) : super(key: key);
 
   @override
-  State<MainView> createState() => _MainViewState();
+  State<CategoryView> createState() => _CategoryViewState();
 }
 
-class _MainViewState extends State<MainView> {
+class _CategoryViewState extends State<CategoryView> {
   List<String> _selectedItems = [];
   bool _categoryView = true;
 
@@ -70,58 +56,65 @@ class _MainViewState extends State<MainView> {
       'social help'
     ];
 
-    const TextStyle optionStyle =
-        TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
-    const List<Widget> _widgetOptions = <Widget>[
-      CategoryView(),
-      //Map(),
-      //Chat(),
-      //Profile(),
-    ];
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ukrainian tinder'),
-        actions: [
-          const IconButton(
-            onPressed: null,
-            icon: Icon(Icons.list),
-            tooltip: 'View Favourites',
-          ),
-        ],
-        leading: !_categoryView
-            ? IconButton(
-                onPressed: goBack,
-                icon: Icon(Icons.arrow_back),
-                tooltip: 'Go back',
+        floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
+        floatingActionButton: !_categoryView
+            ? Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: FloatingActionButton(
+                  elevation: 0,
+                  hoverElevation: 0,
+                  onPressed: () => goBack(),
+                  backgroundColor: Theme.of(context).primaryColor,
+                  child: const Icon(Icons.arrow_back),
+                ),
               )
             : null,
-      ),
-      bottomNavigationBar:
-          BottomNavigationBar(type: BottomNavigationBarType.fixed,
-              //currentIndex: 3,
-              //backgroundColor: Colors.blueAccent,
-              items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.category),
-              label: 'Categories',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.map),
-              label: 'Map',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.chat),
-              label: 'Chat',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ]),
-      body: CategoryView(),
-    );
+        body: _categoryView
+            ? ListView.builder(
+                itemCount: categories.length * 2,
+                padding: const EdgeInsets.all(16.0),
+                itemBuilder: (context, i) {
+                  if (i.isOdd) return const Divider();
+
+                  final index = i ~/ 2;
+
+                  return ListTile(
+                      title: Text(
+                        categories[index],
+                        style: const TextStyle(
+                            fontSize: 18, color: Color(0xFF000000)),
+                      ),
+                      leading: const Icon(
+                        Icons.keyboard_double_arrow_right_sharp,
+                        color: Colors.blueAccent,
+                        semanticLabel: 'Filter categories',
+                      ),
+                      onTap: () => _showMultiSelect(index));
+                },
+              )
+            : ListView.builder(
+                itemCount: _selectedItems.length * 2,
+                padding: const EdgeInsets.all(16.0),
+                itemBuilder: (context, i) {
+                  if (i.isOdd) return const Divider();
+
+                  final index = i ~/ 2;
+
+                  return ListTile(
+                      title: Text(
+                        _selectedItems[index],
+                        style: const TextStyle(
+                            fontSize: 18, color: Color(0xFF000000)),
+                      ),
+                      trailing: const Icon(
+                        Icons.add,
+                        color: Colors.blueAccent,
+                        semanticLabel: 'More',
+                      ),
+                      onTap:
+                          null); // TO DO: clicking this should bring info about the location
+                }));
   }
 }
 
