@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import './category_view.dart';
+import './profile_view.dart';
+import './map_view.dart';
+import './chat_view.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -26,6 +29,7 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   List<String> _selectedItems = [];
   bool _categoryView = true;
+  int _selectedView = 0;
 
   void _showMultiSelect(int index) async {
     // a list of selectable items
@@ -61,6 +65,12 @@ class _MainViewState extends State<MainView> {
     });
   }
 
+  void changeView(int index) {
+    setState(() {
+      _selectedView = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> categories = <String>[
@@ -75,9 +85,9 @@ class _MainViewState extends State<MainView> {
 
     const List<Widget> _widgetOptions = <Widget>[
       CategoryView(),
-      //Map(),
-      //Chat(),
-      //Profile(),
+      MapView(),
+      ChatView(),
+      ProfileView()
     ];
 
     return Scaffold(
@@ -98,29 +108,32 @@ class _MainViewState extends State<MainView> {
               )
             : null,
       ),
-      bottomNavigationBar:
-          BottomNavigationBar(type: BottomNavigationBarType.fixed,
-              //currentIndex: 3,
-              //backgroundColor: Colors.blueAccent,
-              items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.category),
-              label: 'Categories',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.map),
-              label: 'Map',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.chat),
-              label: 'Chat',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ]),
-      body: CategoryView(),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        //currentIndex: 3,
+        //backgroundColor: Colors.blueAccent,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.category),
+            label: 'Categories',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map),
+            label: 'Map',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Chat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedView,
+        onTap: changeView,
+      ),
+      body: _widgetOptions[_selectedView],
     );
   }
 }
