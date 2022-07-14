@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-List<String> selectedItems = [];
+Set<String> selectedItems = {};
 
 class CategoryView extends StatefulWidget {
   const CategoryView({Key? key}) : super(key: key);
@@ -10,7 +10,7 @@ class CategoryView extends StatefulWidget {
 }
 
 class _CategoryViewState extends State<CategoryView> {
-  List<String> _selectedItems = [];
+  Set<String> _selectedItems = {};
   bool _categoryView = true;
 
   void _showMultiSelect(int index) async {
@@ -23,7 +23,7 @@ class _CategoryViewState extends State<CategoryView> {
       ['Charities', 'Church', 'UA embassy', 'City council']
     ];
 
-    final List<String>? results = await showDialog(
+    final Set<String>? results = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return MultiSelect(items: _items[index]);
@@ -33,17 +33,17 @@ class _CategoryViewState extends State<CategoryView> {
     // Update UI
     if (results != null) {
       setState(() {
-        _selectedItems = results;
-        selectedItems = results;
-        _categoryView = false;
+        _selectedItems = Set.from(results);
+        selectedItems = Set.from(results);
+        //_categoryView = false;
       });
     }
-    print(results);
+    print(selectedItems);
   }
 
-  void goBack() async {
+  void toggleCategories() {
     setState(() {
-      _categoryView = true;
+      _categoryView = !_categoryView;
     });
   }
 
@@ -57,19 +57,30 @@ class _CategoryViewState extends State<CategoryView> {
     ];
 
     return Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
+        floatingActionButtonLocation: !_categoryView
+            ? FloatingActionButtonLocation.startDocked
+            : FloatingActionButtonLocation.endDocked,
         floatingActionButton: !_categoryView
             ? Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+                padding: const EdgeInsets.only(bottom: 12.0),
                 child: FloatingActionButton(
                   elevation: 0,
                   hoverElevation: 0,
-                  onPressed: () => goBack(),
+                  onPressed: () => toggleCategories(),
                   backgroundColor: Theme.of(context).primaryColor,
                   child: const Icon(Icons.arrow_back),
                 ),
               )
-            : null,
+            : Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: FloatingActionButton(
+                  elevation: 0,
+                  hoverElevation: 0,
+                  onPressed: () => toggleCategories(),
+                  backgroundColor: Theme.of(context).primaryColor,
+                  child: const Icon(Icons.save),
+                ),
+              ),
         body: _categoryView
             ? ListView.builder(
                 itemCount: categories.length * 2,
@@ -94,7 +105,7 @@ class _CategoryViewState extends State<CategoryView> {
                 },
               )
             : ListView.builder(
-                itemCount: _selectedItems.length * 2,
+                itemCount: selectedItems.length * 2,
                 padding: const EdgeInsets.all(16.0),
                 itemBuilder: (context, i) {
                   if (i.isOdd) return const Divider();
@@ -103,7 +114,7 @@ class _CategoryViewState extends State<CategoryView> {
 
                   return ListTile(
                       title: Text(
-                        _selectedItems[index],
+                        selectedItems.elementAt(index),
                         style: const TextStyle(
                             fontSize: 18, color: Color(0xFF000000)),
                       ),
@@ -128,7 +139,7 @@ class MultiSelect extends StatefulWidget {
 
 class _MultiSelectState extends State<MultiSelect> {
   // this variable holds the selected items
-  final List<String> _selectedItems = [];
+  final Set<String> _selectedItems = Set.from(selectedItems);
 
 // This function is triggered when a checkbox is checked or unchecked
   void _itemChange(String itemValue, bool isSelected) {
