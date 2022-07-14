@@ -118,11 +118,6 @@ class _CategoryViewState extends State<CategoryView> {
                         style: const TextStyle(
                             fontSize: 18, color: Color(0xFF000000)),
                       ),
-                      trailing: const Icon(
-                        Icons.add,
-                        color: Colors.blueAccent,
-                        semanticLabel: 'More',
-                      ),
                       onTap:
                           null); // TO DO: clicking this should bring info about the location
                 }));

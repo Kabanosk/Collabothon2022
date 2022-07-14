@@ -1,9 +1,15 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:custom_info_window/custom_info_window.dart';
+<<<<<<< HEAD
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+=======
+
+import 'model/place.dart';
+>>>>>>> feature/firestore
 
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
@@ -38,6 +44,7 @@ class MapViewState extends State<MapView> {
     'social help': 0.0
   };
 
+<<<<<<< HEAD
   final List<Map<String, Object>> test = [
     {
       'name': 'POGCHAMP',
@@ -76,11 +83,38 @@ class MapViewState extends State<MapView> {
         element['y'] as double,
         element['type'].toString(),
         element['phoneNumber'].toString(),
+=======
+  CollectionReference _placesRef =
+      FirebaseFirestore.instance.collection('places');
+
+  Future<List<Place>> getPlaces() async {
+    List<Place> listOfPlaces = [];
+    var querySnapshot = await _placesRef.get();
+    for (var queryDocumentSnapshot in querySnapshot.docs) {
+      Map<String, dynamic> data =
+          queryDocumentSnapshot.data() as Map<String, dynamic>;
+      listOfPlaces.add(Place.fromJson(data));
+    }
+    return listOfPlaces;
+  }
+
+  Set<Marker> updateMarkers(List<Place> map) {
+    Set<Marker> _markers = {};
+    for (var element in map) {
+      _markers.add(createMarker(
+        element.id,
+        element.name,
+        element.descryption,
+        element.x,
+        element.y,
+        element.type,
+>>>>>>> feature/firestore
       ));
     }
     return _markers;
   }
 
+<<<<<<< HEAD
   _callNumber(String phoneNumber) async {
     String number = phoneNumber;
     await FlutterPhoneDirectCaller.callNumber(number);
@@ -88,6 +122,10 @@ class MapViewState extends State<MapView> {
 
   Marker createMarker(String id, String name, String desc, double X, double Y,
       String type, String phoneNumber) {
+=======
+  Marker createMarker(
+      String id, String name, String desc, double X, double Y, String type) {
+>>>>>>> feature/firestore
     return Marker(
         markerId: MarkerId(id),
         position: LatLng(X, Y),
@@ -151,6 +189,7 @@ class MapViewState extends State<MapView> {
                           const EdgeInsets.only(top: 10, left: 10, right: 10),
                       child: Row(
                         children: [
+<<<<<<< HEAD
                           Icon(IconData(0xe4a2, fontFamily: 'MaterialIcons')),
                           SizedBox(
                             width: 10,
@@ -165,6 +204,22 @@ class MapViewState extends State<MapView> {
                               },
                             ),
                           ),
+=======
+                          SizedBox(
+                            width: 100,
+                            child: Text(
+                              'Zadzwoń',
+                              maxLines: 1,
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            'Nawiguj',
+                            // widget.data!.date!,
+                          )
+>>>>>>> feature/firestore
                         ],
                       ),
                     ),
@@ -173,16 +228,35 @@ class MapViewState extends State<MapView> {
               ),
               LatLng(X, Y));
         });
+<<<<<<< HEAD
+=======
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPlaces().then((data) {
+      setState(() {
+        _markers = updateMarkers(data);
+      });
+    });
+>>>>>>> feature/firestore
   }
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     _markers = updateMarkers(test);
+=======
+>>>>>>> feature/firestore
     return new Scaffold(
       body: Stack(
         children: <Widget>[
           GoogleMap(
+<<<<<<< HEAD
             mapToolbarEnabled: true,
+=======
+>>>>>>> feature/firestore
             onTap: (position) {
               _customInfoWindowController.hideInfoWindow!();
             },

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "151453309454",
+    "project_id": "colabothon2022-4c557",
+    "storage_bucket": "colabothon2022-4c557.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151453309454:android:28ea7b07f901b944533a5f",
+        "android_client_info": {
+          "package_name": "com.example.collabothon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "151453309454-f797la4fgn8fvl9mguo3ie1amdjo08ql.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACRsQwqIjAfCkZ_jfNpG3V8YBOK8q-4Ko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "151453309454-f797la4fgn8fvl9mguo3ie1amdjo08ql.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
