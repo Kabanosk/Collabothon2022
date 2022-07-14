@@ -129,6 +129,18 @@ class _chatPanelState extends State<chatPanel> {
     setState(() {
       currentlyDisplayed = index;
     });
+    _pushChatConversation(index);
+  }
+
+  void _pushChatConversation(int index) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) {
+          return chatmateConversation(
+              chatmates[index], getMessages(chatmates[index]), context);
+        },
+      ),
+    );
   }
 
   List<Widget> getMessages(String chatmate) {
@@ -174,13 +186,7 @@ class _chatPanelState extends State<chatPanel> {
 
   @override
   Widget build(BuildContext) {
-    return currentlyDisplayed == -1
-        ? chatmatesList(chatmates, displayChatWindow)
-        : chatmateConversation(
-            chatmates[currentlyDisplayed],
-            () => {displayChatWindow(-1)},
-            getMessages(chatmates[currentlyDisplayed]),
-            context);
+    return chatmatesList(chatmates, displayChatWindow);
   }
 }
 
@@ -213,14 +219,10 @@ Widget chatmatesList(List<String> chatmates, Function displayChatWindow) {
       ));
 }
 
-Widget chatmateConversation(String chatmate, VoidCallback goBack,
-    List<Widget> messages, BuildContext context) {
+Widget chatmateConversation(
+    String chatmate, List<Widget> messages, BuildContext context) {
   return Scaffold(
-    appBar: AppBar(
-        title: Row(children: [
-      IconButton(onPressed: goBack, icon: Icon(Icons.arrow_back)),
-      Text(chatmate)
-    ])),
+    appBar: AppBar(title: Row(children: [Text(chatmate)])),
     body: SizedBox(
       child: SingleChildScrollView(child: Column(children: messages)),
       width: MediaQuery.of(context).size.width,
