@@ -70,7 +70,7 @@ class _MainViewState extends State<MainView> {
             tooltip: 'View Favourites',
           ),
         ],
-        leading: Text(location!.longitude.toString()),
+        //leading: Text(location!.longitude.toString()),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
