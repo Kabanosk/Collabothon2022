@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:custom_info_window/custom_info_window.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
@@ -41,16 +42,26 @@ class MapViewState extends State<MapView> {
     {
       'name': 'POGCHAMP',
       'descryption': 'KOCHAM UWUr',
-      'x': 51.1101851799257,
-      'y': 17.05400886656973,
-      'type': 'transport'
+      'x': 51.109940,
+      'y': 17.054260,
+      'type': 'transport',
+      'phoneNumber': '+48420692137',
+    },
+    {
+      'name': 'COS',
+      'descryption': 'COS UWUr',
+      'x': 51.108663,
+      'y': 17.048853,
+      'type': 'transport',
+      'phoneNumber': '+48420692137',
     },
     {
       'name': 'RACIBÓRZ',
       'descryption': 'MAFIA RACIBORSKA',
       'x': 50.125380,
       'y': 18.185827,
-      'type': 'supplies'
+      'type': 'supplies',
+      'phoneNumber': '+48516337454',
     }
   ];
 
@@ -58,18 +69,25 @@ class MapViewState extends State<MapView> {
     Set<Marker> _markers = {};
     for (var element in map) {
       _markers.add(createMarker(
-          element['name'].toString(),
-          element['name'].toString(),
-          element['descryption'].toString(),
-          element['x'] as double,
-          element['y'] as double,
-          element['type'].toString()));
+        element['name'].toString(),
+        element['name'].toString(),
+        element['descryption'].toString(),
+        element['x'] as double,
+        element['y'] as double,
+        element['type'].toString(),
+        element['phoneNumber'].toString(),
+      ));
     }
     return _markers;
   }
 
-  Marker createMarker(
-      String id, String name, String desc, double X, double Y, String type) {
+  _callNumber(String phoneNumber) async {
+    String number = phoneNumber;
+    await FlutterPhoneDirectCaller.callNumber(number);
+  }
+
+  Marker createMarker(String id, String name, String desc, double X, double Y,
+      String type, String phoneNumber) {
     return Marker(
         markerId: MarkerId(id),
         position: LatLng(X, Y),
@@ -133,20 +151,20 @@ class MapViewState extends State<MapView> {
                           const EdgeInsets.only(top: 10, left: 10, right: 10),
                       child: Row(
                         children: [
+                          Icon(IconData(0xe4a2, fontFamily: 'MaterialIcons')),
                           SizedBox(
-                            width: 100,
-                            child: Text(
-                              'Zadzwoń',
-                              maxLines: 1,
-                              overflow: TextOverflow.fade,
-                              softWrap: false,
+                            width: 10,
+                          ),
+                          SizedBox(
+                            width: 80,
+                            height: 30,
+                            child: ElevatedButton(
+                              child: const Text("Call"),
+                              onPressed: () {
+                                _callNumber(phoneNumber);
+                              },
                             ),
                           ),
-                          const Spacer(),
-                          Text(
-                            'Nawiguj',
-                            // widget.data!.date!,
-                          )
                         ],
                       ),
                     ),
@@ -164,6 +182,7 @@ class MapViewState extends State<MapView> {
       body: Stack(
         children: <Widget>[
           GoogleMap(
+            mapToolbarEnabled: true,
             onTap: (position) {
               _customInfoWindowController.hideInfoWindow!();
             },
