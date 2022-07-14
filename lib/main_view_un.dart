@@ -107,7 +107,7 @@ class _MainViewState extends State<MainView> {
         selectedItemColor: Colors.blueAccent,
       ),
       // body: _widgetOptions[_selectedView],
-      body: CategoryView(),
+      body: CategoryView(location),
     );
   }
 }
