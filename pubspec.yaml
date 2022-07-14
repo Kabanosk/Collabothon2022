@@ -36,15 +36,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_maps_flutter: ^2.1.8
   custom_info_window: ^1.0.1
-<<<<<<< HEAD
   geolocator: ^9.0.1
-=======
   flutter_polyline_points: ^1.0.0
   flutter_svg: ^1.1.0
 
   url_launcher: ^6.1.5
   flutter_phone_direct_caller: ^2.1.1
->>>>>>> 20d6ab00b147b8af41a59273b6d689a84d32d31d
 
 dev_dependencies:
   flutter_test:
