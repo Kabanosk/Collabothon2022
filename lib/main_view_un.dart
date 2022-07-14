@@ -6,6 +6,8 @@ import './profile_view.dart';
 import './map_view.dart';
 import './chat_view.dart';
 
+Position? location;
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -35,7 +37,6 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   // int _selectedView = 0;
   bool locationAvailable = false;
-  Position? location;
 
   // void changeView(int index) {
   //   setState(() {
@@ -57,9 +58,15 @@ class _MainViewState extends State<MainView> {
   @override
   void initState() {
     super.initState();
+    fetchLocation();
+  }
+
+  void fetchLocation() {
     determinePosition().then((data) {
       setState(() {
         location = data;
+        locationAvailable = true;
+        print(location);
       });
     });
   }
@@ -75,9 +82,11 @@ class _MainViewState extends State<MainView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Google challenge'),
-        // leading: Text(location!.longitude.toString()),
-      ),
+          title: const Text('Google challenge'),
+          leading: IconButton(
+            icon: Icon(Icons.gps_fixed),
+            onPressed: fetchLocation,
+          )),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         //currentIndex: 3,
@@ -107,7 +116,7 @@ class _MainViewState extends State<MainView> {
         selectedItemColor: Colors.blueAccent,
       ),
       // body: _widgetOptions[_selectedView],
-      body: location == null ? CategoryView() : CategoryView.location(location),
+      body: CategoryView(),
     );
   }
 }
