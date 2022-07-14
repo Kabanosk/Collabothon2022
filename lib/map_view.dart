@@ -171,6 +171,9 @@ class MapViewState extends State<MapView> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      appBar: AppBar(
+        title: const Text('An awesome map!'),
+      ),
       body: Stack(
         children: <Widget>[
           GoogleMap(
