@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:custom_info_window/custom_info_window.dart';
-
 import 'model/place.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
 CollectionReference _placesRef =
     FirebaseFirestore.instance.collection('places');
@@ -64,13 +64,19 @@ class MapViewState extends State<MapView> {
         element.x,
         element.y,
         element.type,
+        element.number
       ));
     }
     return _markers;
   }
 
-  Marker createMarker(
-      String id, String name, String desc, double X, double Y, String type) {
+  _callNumber(String phoneNumber) async {
+    String number = phoneNumber;
+    await FlutterPhoneDirectCaller.callNumber(number);
+  }
+
+  Marker createMarker(String id, String name, String desc, double X, double Y,
+      String type, String phoneNumber) {
     return Marker(
         markerId: MarkerId(id),
         position: LatLng(X, Y),
@@ -134,20 +140,20 @@ class MapViewState extends State<MapView> {
                           const EdgeInsets.only(top: 10, left: 10, right: 10),
                       child: Row(
                         children: [
+                          Icon(IconData(0xe4a2, fontFamily: 'MaterialIcons')),
                           SizedBox(
-                            width: 100,
-                            child: Text(
-                              'Zadzwoń',
-                              maxLines: 1,
-                              overflow: TextOverflow.fade,
-                              softWrap: false,
+                            width: 10,
+                          ),
+                          SizedBox(
+                            width: 80,
+                            height: 30,
+                            child: ElevatedButton(
+                              child: const Text("Call"),
+                              onPressed: () {
+                                _callNumber(phoneNumber);
+                              },
                             ),
                           ),
-                          const Spacer(),
-                          Text(
-                            'Nawiguj',
-                            // widget.data!.date!,
-                          )
                         ],
                       ),
                     ),
