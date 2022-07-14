@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import './map_view.dart';
+import './model/place.dart';
 
-Set<String> selectedItems = {};
+Set<String> globalSelectedItems = {};
 
 class CategoryView extends StatefulWidget {
   const CategoryView({Key? key}) : super(key: key);
@@ -13,6 +14,26 @@ class CategoryView extends StatefulWidget {
 class _CategoryViewState extends State<CategoryView> {
   Set<String> _selectedItems = {};
   bool _categoryView = true;
+  List<Place> _filteredPlaces = [];
+  List<Place> _allPlaces = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getPlaces().then((data) {
+      setState(() {
+        _allPlaces = data;
+        // print(_allPlaces.first.tags);
+      });
+    });
+  }
+
+  List<Place> FilterPlaces(Set<String> selectedCategories) {
+    return _allPlaces
+        .where((element) =>
+            element.tags.any((tag) => selectedCategories.contains(tag)))
+        .toList();
+  }
 
   void _showMultiSelect(int index) async {
     // a list of selectable items
@@ -35,11 +56,15 @@ class _CategoryViewState extends State<CategoryView> {
     if (results != null) {
       setState(() {
         _selectedItems = Set.from(results);
-        selectedItems = Set.from(results);
+        globalSelectedItems = Set.from(results);
         //_categoryView = false;
       });
+      setState(() {
+        _filteredPlaces = FilterPlaces(globalSelectedItems);
+        print(_filteredPlaces);
+      });
     }
-    print(selectedItems);
+    print(globalSelectedItems);
   }
 
   void toggleCategories() {
@@ -54,7 +79,8 @@ class _CategoryViewState extends State<CategoryView> {
       'supplies',
       'accomodation',
       'transport',
-      'social help'
+      'social help',
+      'distance',
     ];
 
     return Scaffold(
@@ -88,25 +114,44 @@ class _CategoryViewState extends State<CategoryView> {
                 padding: const EdgeInsets.all(16.0),
                 itemBuilder: (context, i) {
                   if (i.isOdd) return const Divider();
-
-                  final index = i ~/ 2;
-
-                  return ListTile(
-                      title: Text(
-                        categories[index],
-                        style: const TextStyle(
-                            fontSize: 18, color: Color(0xFF000000)),
+                  if (i > 6) {
+                    return ListTile(
+                        // title: Text(
+                        //   categories[i ~/ 2],
+                        //   style: const TextStyle(
+                        //       fontSize: 18, color: Color(0xFF000000)),
+                        // ),
+                        // leading: const Icon(
+                        //   Icons.add,
+                        //   color: Colors.blueAccent,
+                        //   semanticLabel: 'Distance Filter',
+                        // ),
+                        title: const TextField(
+                      obscureText: false,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Distance limit in km',
                       ),
-                      leading: const Icon(
-                        Icons.keyboard_double_arrow_right_sharp,
-                        color: Colors.blueAccent,
-                        semanticLabel: 'Filter categories',
-                      ),
-                      onTap: () => _showMultiSelect(index));
+                    ));
+                  } else {
+                    final index = i ~/ 2;
+                    return ListTile(
+                        title: Text(
+                          categories[index],
+                          style: const TextStyle(
+                              fontSize: 18, color: Color(0xFF000000)),
+                        ),
+                        leading: const Icon(
+                          Icons.keyboard_double_arrow_right_sharp,
+                          color: Colors.blueAccent,
+                          semanticLabel: 'Filter Categories',
+                        ),
+                        onTap: () => _showMultiSelect(index));
+                  }
                 },
               )
             : ListView.builder(
-                itemCount: selectedItems.length * 2,
+                itemCount: _filteredPlaces.length * 2,
                 padding: const EdgeInsets.all(16.0),
                 itemBuilder: (context, i) {
                   if (i.isOdd) return const Divider();
@@ -115,7 +160,7 @@ class _CategoryViewState extends State<CategoryView> {
 
                   return ListTile(
                       title: Text(
-                        selectedItems.elementAt(index),
+                        _filteredPlaces[index].name,
                         style: const TextStyle(
                             fontSize: 18, color: Color(0xFF000000)),
                       ),
@@ -135,7 +180,7 @@ class MultiSelect extends StatefulWidget {
 
 class _MultiSelectState extends State<MultiSelect> {
   // this variable holds the selected items
-  final Set<String> _selectedItems = Set.from(selectedItems);
+  final Set<String> _selectedItems = Set.from(globalSelectedItems);
 
 // This function is triggered when a checkbox is checked or unchecked
   void _itemChange(String itemValue, bool isSelected) {
