@@ -25,37 +25,43 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: SingleChildScrollView(
-            child: Column(
-      children: [
-        _profileImage(),
-        Text(
-          'Jan Papież 2',
-          style: TextStyle(fontSize: 25, letterSpacing: 1),
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Cool profile'),
+          // leading: Text(location!.longitude.toString()),
         ),
-        Text('jp2gmd@gmail.com', style: TextStyle(fontSize: 25, letterSpacing: 1)),
-        Row(
+        body: Center(
+            child: SingleChildScrollView(
+                child: Column(
           children: [
-            TextButton(
-                child:
-                    Text('Switch\n profile role', textAlign: TextAlign.center),
-                onPressed: () => {},
-                style: TextButton.styleFrom(
-                    padding: EdgeInsets.all(10),
-                    textStyle: TextStyle(fontSize: 17))),
-            TextButton(
-                child: Text('Wyloguj'),
-                onPressed: () => {},
-                style: TextButton.styleFrom(
-                    padding: EdgeInsets.all(30),
-                    textStyle: TextStyle(fontSize: 17))),
+            _profileImage(),
+            Text(
+              'Jan Papież 2',
+              style: TextStyle(fontSize: 25, letterSpacing: 1),
+            ),
+            Text('jp2gmd@gmail.com',
+                style: TextStyle(fontSize: 25, letterSpacing: 1)),
+            Row(
+              children: [
+                TextButton(
+                    child: Text('Switch\n profile role',
+                        textAlign: TextAlign.center),
+                    onPressed: () => {},
+                    style: TextButton.styleFrom(
+                        padding: EdgeInsets.all(10),
+                        textStyle: TextStyle(fontSize: 17))),
+                TextButton(
+                    child: Text('Wyloguj'),
+                    onPressed: () => {},
+                    style: TextButton.styleFrom(
+                        padding: EdgeInsets.all(30),
+                        textStyle: TextStyle(fontSize: 17))),
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
           ],
           mainAxisAlignment: MainAxisAlignment.center,
-        ),
-      ],
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-    )));
+          crossAxisAlignment: CrossAxisAlignment.center,
+        ))));
   }
 }

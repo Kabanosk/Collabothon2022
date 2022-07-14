@@ -7,6 +7,20 @@ import 'package:custom_info_window/custom_info_window.dart';
 import 'model/place.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
+CollectionReference _placesRef =
+    FirebaseFirestore.instance.collection('places');
+
+Future<List<Place>> getPlaces() async {
+  List<Place> listOfPlaces = [];
+  var querySnapshot = await _placesRef.get();
+  for (var queryDocumentSnapshot in querySnapshot.docs) {
+    Map<String, dynamic> data =
+        queryDocumentSnapshot.data() as Map<String, dynamic>;
+    listOfPlaces.add(Place.fromJson(data));
+  }
+  return listOfPlaces;
+}
+
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
 
@@ -39,20 +53,6 @@ class MapViewState extends State<MapView> {
     'transport': 180.0,
     'social help': 0.0
   };
-
-  CollectionReference _placesRef =
-      FirebaseFirestore.instance.collection('places');
-
-  Future<List<Place>> getPlaces() async {
-    List<Place> listOfPlaces = [];
-    var querySnapshot = await _placesRef.get();
-    for (var queryDocumentSnapshot in querySnapshot.docs) {
-      Map<String, dynamic> data =
-          queryDocumentSnapshot.data() as Map<String, dynamic>;
-      listOfPlaces.add(Place.fromJson(data));
-    }
-    return listOfPlaces;
-  }
 
   Set<Marker> updateMarkers(List<Place> map) {
     Set<Marker> _markers = {};
@@ -177,6 +177,9 @@ class MapViewState extends State<MapView> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      appBar: AppBar(
+        title: const Text('An awesome map!'),
+      ),
       body: Stack(
         children: <Widget>[
           GoogleMap(
