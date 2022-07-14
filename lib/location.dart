@@ -1,29 +1,30 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 
-/// Dart data model
-class LocationValues {
-  Position position;
+// Context for position - Currently not in use
+// /// Dart data model
+// class LocationValue {
+//   Position position;
 
-  LocationValues({required this.position});
-}
+//   LocationValue({required this.position});
+// }
 
-/// Flutter context type updated
-class Location extends InheritedWidget {
-  final LocationValues values;
-  Location({required Widget child, required this.values}) : super(child: child);
+// /// Flutter context type updated
+// class Location extends InheritedWidget {
+//   final LocationValue value;
+//   Location({required Widget child, required this.value}) : super(child: child);
 
-  @override
-  bool updateShouldNotify(covariant InheritedWidget oldWidget) {
-    return true;
-  }
+//   @override
+//   bool updateShouldNotify(covariant InheritedWidget oldWidget) {
+//     return true;
+//   }
 
-  static Location of(BuildContext context) {
-    final location = context.dependOnInheritedWidgetOfExactType<Location>();
-    assert(location != null, 'No Location found in context');
-    return location!;
-  }
-}
+//   static Location of(BuildContext context) {
+//     final location = context.dependOnInheritedWidgetOfExactType<Location>();
+//     assert(location != null, 'No Location found in context');
+//     return location!;
+//   }
+// }
 
 /// Determine the current position of the device.
 ///

@@ -30,10 +30,22 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
   int _selectedView = 0;
+  bool locationAvailable = false;
+  Position? location;
 
   void changeView(int index) {
     setState(() {
       _selectedView = index;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    determinePosition().then((data) {
+      setState(() {
+        location = data;
+      });
     });
   }
 
@@ -58,6 +70,7 @@ class _MainViewState extends State<MainView> {
             tooltip: 'View Favourites',
           ),
         ],
+        leading: Text(location!.longitude.toString()),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
