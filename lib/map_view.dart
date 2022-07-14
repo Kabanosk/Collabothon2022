@@ -4,8 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:custom_info_window/custom_info_window.dart';
+<<<<<<< HEAD
 
 import 'model/place.dart';
+=======
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+>>>>>>> feature/main_view
 
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
@@ -40,6 +44,7 @@ class MapViewState extends State<MapView> {
     'social help': 0.0
   };
 
+<<<<<<< HEAD
   CollectionReference _placesRef =
       FirebaseFirestore.instance.collection('places');
 
@@ -64,13 +69,63 @@ class MapViewState extends State<MapView> {
         element.x,
         element.y,
         element.type,
+=======
+  final List<Map<String, Object>> test = [
+    {
+      'name': 'POGCHAMP',
+      'descryption': 'KOCHAM UWUr',
+      'x': 51.109940,
+      'y': 17.054260,
+      'type': 'transport',
+      'phoneNumber': '+48420692137',
+    },
+    {
+      'name': 'COS',
+      'descryption': 'COS UWUr',
+      'x': 51.108663,
+      'y': 17.048853,
+      'type': 'transport',
+      'phoneNumber': '+48420692137',
+    },
+    {
+      'name': 'RACIBÓRZ',
+      'descryption': 'MAFIA RACIBORSKA',
+      'x': 50.125380,
+      'y': 18.185827,
+      'type': 'supplies',
+      'phoneNumber': '+48516337454',
+    }
+  ];
+
+  Set<Marker> updateMarkers(List<Map<String, Object>> map) {
+    Set<Marker> _markers = {};
+    for (var element in map) {
+      _markers.add(createMarker(
+        element['name'].toString(),
+        element['name'].toString(),
+        element['descryption'].toString(),
+        element['x'] as double,
+        element['y'] as double,
+        element['type'].toString(),
+        element['phoneNumber'].toString(),
+>>>>>>> feature/main_view
       ));
     }
     return _markers;
   }
 
+<<<<<<< HEAD
   Marker createMarker(
       String id, String name, String desc, double X, double Y, String type) {
+=======
+  _callNumber(String phoneNumber) async {
+    String number = phoneNumber;
+    await FlutterPhoneDirectCaller.callNumber(number);
+  }
+
+  Marker createMarker(String id, String name, String desc, double X, double Y,
+      String type, String phoneNumber) {
+>>>>>>> feature/main_view
     return Marker(
         markerId: MarkerId(id),
         position: LatLng(X, Y),
@@ -134,6 +189,7 @@ class MapViewState extends State<MapView> {
                           const EdgeInsets.only(top: 10, left: 10, right: 10),
                       child: Row(
                         children: [
+<<<<<<< HEAD
                           SizedBox(
                             width: 100,
                             child: Text(
@@ -148,6 +204,22 @@ class MapViewState extends State<MapView> {
                             'Nawiguj',
                             // widget.data!.date!,
                           )
+=======
+                          Icon(IconData(0xe4a2, fontFamily: 'MaterialIcons')),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          SizedBox(
+                            width: 80,
+                            height: 30,
+                            child: ElevatedButton(
+                              child: const Text("Call"),
+                              onPressed: () {
+                                _callNumber(phoneNumber);
+                              },
+                            ),
+                          ),
+>>>>>>> feature/main_view
                         ],
                       ),
                     ),
@@ -156,6 +228,7 @@ class MapViewState extends State<MapView> {
               ),
               LatLng(X, Y));
         });
+<<<<<<< HEAD
   }
 
   @override
@@ -166,14 +239,24 @@ class MapViewState extends State<MapView> {
         _markers = updateMarkers(data);
       });
     });
+=======
+>>>>>>> feature/main_view
   }
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
+=======
+    _markers = updateMarkers(test);
+>>>>>>> feature/main_view
     return new Scaffold(
       body: Stack(
         children: <Widget>[
           GoogleMap(
+<<<<<<< HEAD
+=======
+            mapToolbarEnabled: true,
+>>>>>>> feature/main_view
             onTap: (position) {
               _customInfoWindowController.hideInfoWindow!();
             },
