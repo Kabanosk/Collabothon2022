@@ -21,8 +21,13 @@ class MapViewState extends State<MapView> {
   Set<Marker> Markers = {};
 
   List<Map<String, Object>> test = [
-    {'name': 'POGCHAMP', 'x': 51.1101851799257, 'y': 17.05400886656973},
-    {'name': 'RACIBÓRZ', 'x': 50.110401, 'y': 18.186264}
+    {
+      'name': 'POGCHAMP',
+      'x': 51.1101851799257,
+      'y': 17.05400886656973,
+      'hue': 60.0
+    },
+    {'name': 'RACIBÓRZ', 'x': 50.110401, 'y': 18.186264, 'hue': 120.0}
   ];
 
   Set<Marker> _Update_Markers(List<Map<String, Object>> map) {
@@ -33,17 +38,17 @@ class MapViewState extends State<MapView> {
           element['name'].toString(),
           element['x'] as double,
           element['y'] as double,
-          420));
+          element['hue'] as double));
     }
     return Markers;
   }
 
   Marker _Create_Marker(
-      String ID, String name, double X, double Y, double kolor) {
+      String ID, String name, double X, double Y, double hue) {
     return Marker(
       markerId: MarkerId(ID),
       infoWindow: InfoWindow(title: name),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      icon: BitmapDescriptor.defaultMarkerWithHue(hue),
       position: LatLng(X, Y),
     );
   }
