@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import './location.dart';
 import './category_view.dart';
 import './profile_view.dart';
 import './map_view.dart';
@@ -37,6 +39,8 @@ class _MainViewState extends State<MainView> {
 
   @override
   Widget build(BuildContext context) {
+    // TO-DO Use location context to fetch current location
+    // Location location = Location.of(context);
     const List<Widget> _widgetOptions = <Widget>[
       CategoryView(),
       MapView(),
