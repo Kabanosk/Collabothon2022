@@ -4,19 +4,8 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Google Maps Demo',
-      home: MapView(),
-    );
-  }
-}
-
 class MapView extends StatefulWidget {
+  const MapView({Key? key}) : super(key: key);
   @override
   State<MapView> createState() => MapViewState();
 }
@@ -63,22 +52,6 @@ class MapViewState extends State<MapView> {
   Widget build(BuildContext context) {
     Markers = _Update_Markers(test);
     return new Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Map',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Profile',
-          ),
-        ],
-      ),
       body: GoogleMap(
         mapType: MapType.normal,
         markers: Markers,
