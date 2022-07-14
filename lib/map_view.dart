@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:custom_info_window/custom_info_window.dart';
+
+import 'model/place.dart';
 
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
@@ -37,33 +40,31 @@ class MapViewState extends State<MapView> {
     'social help': 0.0
   };
 
-  final List<Map<String, Object>> test = [
-    {
-      'name': 'POGCHAMP',
-      'descryption': 'KOCHAM UWUr',
-      'x': 51.1101851799257,
-      'y': 17.05400886656973,
-      'type': 'transport'
-    },
-    {
-      'name': 'RACIBÓRZ',
-      'descryption': 'MAFIA RACIBORSKA',
-      'x': 50.125380,
-      'y': 18.185827,
-      'type': 'supplies'
-    }
-  ];
+  CollectionReference _placesRef =
+      FirebaseFirestore.instance.collection('places');
 
-  Set<Marker> updateMarkers(List<Map<String, Object>> map) {
+  Future<List<Place>> getPlaces() async {
+    List<Place> listOfPlaces = [];
+    var querySnapshot = await _placesRef.get();
+    for (var queryDocumentSnapshot in querySnapshot.docs) {
+      Map<String, dynamic> data =
+          queryDocumentSnapshot.data() as Map<String, dynamic>;
+      listOfPlaces.add(Place.fromJson(data));
+    }
+    return listOfPlaces;
+  }
+
+  Set<Marker> updateMarkers(List<Place> map) {
     Set<Marker> _markers = {};
     for (var element in map) {
       _markers.add(createMarker(
-          element['name'].toString(),
-          element['name'].toString(),
-          element['descryption'].toString(),
-          element['x'] as double,
-          element['y'] as double,
-          element['type'].toString()));
+        element.id,
+        element.name,
+        element.descryption,
+        element.x,
+        element.y,
+        element.type,
+      ));
     }
     return _markers;
   }
@@ -158,8 +159,17 @@ class MapViewState extends State<MapView> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getPlaces().then((data) {
+      setState(() {
+        _markers = updateMarkers(data);
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    _markers = updateMarkers(test);
     return new Scaffold(
       body: Stack(
         children: <Widget>[

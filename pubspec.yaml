@@ -37,6 +37,7 @@ dependencies:
   google_maps_flutter: ^2.1.8
   flutter_polyline_points: ^0.2.6
   custom_info_window: ^1.0.1
+  cloud_firestore: ^3.3.0
 
 dev_dependencies:
   flutter_test:
