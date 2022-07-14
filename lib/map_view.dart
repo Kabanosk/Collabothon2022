@@ -4,12 +4,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:custom_info_window/custom_info_window.dart';
-<<<<<<< HEAD
-import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
-=======
 
 import 'model/place.dart';
->>>>>>> feature/firestore
+
+CollectionReference _placesRef =
+    FirebaseFirestore.instance.collection('places');
+
+Future<List<Place>> getPlaces() async {
+  List<Place> listOfPlaces = [];
+  var querySnapshot = await _placesRef.get();
+  for (var queryDocumentSnapshot in querySnapshot.docs) {
+    Map<String, dynamic> data =
+        queryDocumentSnapshot.data() as Map<String, dynamic>;
+    listOfPlaces.add(Place.fromJson(data));
+  }
+  return listOfPlaces;
+}
 
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
@@ -44,60 +54,6 @@ class MapViewState extends State<MapView> {
     'social help': 0.0
   };
 
-<<<<<<< HEAD
-  final List<Map<String, Object>> test = [
-    {
-      'name': 'POGCHAMP',
-      'descryption': 'KOCHAM UWUr',
-      'x': 51.109940,
-      'y': 17.054260,
-      'type': 'transport',
-      'phoneNumber': '+48420692137',
-    },
-    {
-      'name': 'COS',
-      'descryption': 'COS UWUr',
-      'x': 51.108663,
-      'y': 17.048853,
-      'type': 'transport',
-      'phoneNumber': '+48420692137',
-    },
-    {
-      'name': 'RACIBÓRZ',
-      'descryption': 'MAFIA RACIBORSKA',
-      'x': 50.125380,
-      'y': 18.185827,
-      'type': 'supplies',
-      'phoneNumber': '+48516337454',
-    }
-  ];
-
-  Set<Marker> updateMarkers(List<Map<String, Object>> map) {
-    Set<Marker> _markers = {};
-    for (var element in map) {
-      _markers.add(createMarker(
-        element['name'].toString(),
-        element['name'].toString(),
-        element['descryption'].toString(),
-        element['x'] as double,
-        element['y'] as double,
-        element['type'].toString(),
-        element['phoneNumber'].toString(),
-=======
-  CollectionReference _placesRef =
-      FirebaseFirestore.instance.collection('places');
-
-  Future<List<Place>> getPlaces() async {
-    List<Place> listOfPlaces = [];
-    var querySnapshot = await _placesRef.get();
-    for (var queryDocumentSnapshot in querySnapshot.docs) {
-      Map<String, dynamic> data =
-          queryDocumentSnapshot.data() as Map<String, dynamic>;
-      listOfPlaces.add(Place.fromJson(data));
-    }
-    return listOfPlaces;
-  }
-
   Set<Marker> updateMarkers(List<Place> map) {
     Set<Marker> _markers = {};
     for (var element in map) {
@@ -108,24 +64,13 @@ class MapViewState extends State<MapView> {
         element.x,
         element.y,
         element.type,
->>>>>>> feature/firestore
       ));
     }
     return _markers;
   }
 
-<<<<<<< HEAD
-  _callNumber(String phoneNumber) async {
-    String number = phoneNumber;
-    await FlutterPhoneDirectCaller.callNumber(number);
-  }
-
-  Marker createMarker(String id, String name, String desc, double X, double Y,
-      String type, String phoneNumber) {
-=======
   Marker createMarker(
       String id, String name, String desc, double X, double Y, String type) {
->>>>>>> feature/firestore
     return Marker(
         markerId: MarkerId(id),
         position: LatLng(X, Y),
@@ -189,22 +134,6 @@ class MapViewState extends State<MapView> {
                           const EdgeInsets.only(top: 10, left: 10, right: 10),
                       child: Row(
                         children: [
-<<<<<<< HEAD
-                          Icon(IconData(0xe4a2, fontFamily: 'MaterialIcons')),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          SizedBox(
-                            width: 80,
-                            height: 30,
-                            child: ElevatedButton(
-                              child: const Text("Call"),
-                              onPressed: () {
-                                _callNumber(phoneNumber);
-                              },
-                            ),
-                          ),
-=======
                           SizedBox(
                             width: 100,
                             child: Text(
@@ -219,7 +148,6 @@ class MapViewState extends State<MapView> {
                             'Nawiguj',
                             // widget.data!.date!,
                           )
->>>>>>> feature/firestore
                         ],
                       ),
                     ),
@@ -228,8 +156,6 @@ class MapViewState extends State<MapView> {
               ),
               LatLng(X, Y));
         });
-<<<<<<< HEAD
-=======
   }
 
   @override
@@ -240,23 +166,14 @@ class MapViewState extends State<MapView> {
         _markers = updateMarkers(data);
       });
     });
->>>>>>> feature/firestore
   }
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    _markers = updateMarkers(test);
-=======
->>>>>>> feature/firestore
     return new Scaffold(
       body: Stack(
         children: <Widget>[
           GoogleMap(
-<<<<<<< HEAD
-            mapToolbarEnabled: true,
-=======
->>>>>>> feature/firestore
             onTap: (position) {
               _customInfoWindowController.hideInfoWindow!();
             },
