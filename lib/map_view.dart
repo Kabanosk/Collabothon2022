@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:custom_info_window/custom_info_window.dart';
 
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
+
   @override
   State<MapView> createState() => MapViewState();
 }
@@ -13,57 +14,177 @@ class MapView extends StatefulWidget {
 class MapViewState extends State<MapView> {
   Completer<GoogleMapController> _controller = Completer();
 
+  CustomInfoWindowController _customInfoWindowController =
+      CustomInfoWindowController();
+
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(51.11090780609161, 17.053179152853453),
     zoom: 14.4746,
   );
 
-  Set<Marker> Markers = {};
+  Set<Marker> _markers = {};
 
-  List<Map<String, Object>> test = [
-    {
-      'name': 'POGCHAMP',
-      'x': 51.1101851799257,
-      'y': 17.05400886656973,
-      'hue': 60.0
-    },
-    {'name': 'RACIBÓRZ', 'x': 50.110401, 'y': 18.186264, 'hue': 120.0}
-  ];
-
-  Set<Marker> _Update_Markers(List<Map<String, Object>> map) {
-    Set<Marker> Markers = {};
-    for (var element in map) {
-      Markers.add(_Create_Marker(
-          element['name'].toString(),
-          element['name'].toString(),
-          element['x'] as double,
-          element['y'] as double,
-          element['hue'] as double));
-    }
-    return Markers;
+  @override
+  void dispose() {
+    _customInfoWindowController.dispose();
+    super.dispose();
   }
 
-  Marker _Create_Marker(
-      String ID, String name, double X, double Y, double hue) {
+  final Map<String, double> typeToHue = {
+    'supplies': 60.0,
+    'accomodation': 120.0,
+    'transport': 180.0,
+    'social help': 0.0
+  };
+
+  final List<Map<String, Object>> test = [
+    {
+      'name': 'POGCHAMP',
+      'descryption': 'KOCHAM UWUr',
+      'x': 51.1101851799257,
+      'y': 17.05400886656973,
+      'type': 'transport'
+    },
+    {
+      'name': 'RACIBÓRZ',
+      'descryption': 'MAFIA RACIBORSKA',
+      'x': 50.125380,
+      'y': 18.185827,
+      'type': 'supplies'
+    }
+  ];
+
+  Set<Marker> updateMarkers(List<Map<String, Object>> map) {
+    Set<Marker> _markers = {};
+    for (var element in map) {
+      _markers.add(createMarker(
+          element['name'].toString(),
+          element['name'].toString(),
+          element['descryption'].toString(),
+          element['x'] as double,
+          element['y'] as double,
+          element['type'].toString()));
+    }
+    return _markers;
+  }
+
+  Marker createMarker(
+      String id, String name, String desc, double X, double Y, String type) {
     return Marker(
-      markerId: MarkerId(ID),
-      infoWindow: InfoWindow(title: name),
-      icon: BitmapDescriptor.defaultMarkerWithHue(hue),
-      position: LatLng(X, Y),
-    );
+        markerId: MarkerId(id),
+        position: LatLng(X, Y),
+        icon: BitmapDescriptor.defaultMarkerWithHue(typeToHue[type] as double),
+        //infoWindow: InfoWindow(title: name),
+        onTap: () {
+          _customInfoWindowController.addInfoWindow!(
+              Container(
+                width: 300,
+                height: 200,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 300,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage('assets/images/komi.png'),
+                            fit: BoxFit.fitWidth,
+                            filterQuality: FilterQuality.high),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                        color: Colors.red,
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 10, left: 10, right: 10),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 100,
+                            child: Text(
+                              name,
+                              maxLines: 1,
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 10, left: 10, right: 10),
+                      child: Text(
+                        desc,
+                        maxLines: 2,
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 10, left: 10, right: 10),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 100,
+                            child: Text(
+                              'Zadzwoń',
+                              maxLines: 1,
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            'Nawiguj',
+                            // widget.data!.date!,
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              LatLng(X, Y));
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    Markers = _Update_Markers(test);
+    _markers = updateMarkers(test);
     return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        markers: Markers,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
+      body: Stack(
+        children: <Widget>[
+          GoogleMap(
+            onTap: (position) {
+              _customInfoWindowController.hideInfoWindow!();
+            },
+            onCameraMove: (position) {
+              _customInfoWindowController.onCameraMove!();
+            },
+            mapType: MapType.normal,
+            markers: _markers,
+            initialCameraPosition: _kGooglePlex,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+              _customInfoWindowController.googleMapController = controller;
+            },
+          ),
+          CustomInfoWindow(
+            controller: _customInfoWindowController,
+            height: 200,
+            width: 300,
+            offset: 35,
+          ),
+        ],
       ),
     );
   }
