@@ -6,8 +6,10 @@ import './model/place.dart';
 Set<String> globalSelectedItems = {};
 
 class CategoryView extends StatefulWidget {
-  final Position? location;
-  CategoryView(this.location);
+  Position? location;
+  CategoryView({Key? key}) : super(key: key);
+  CategoryView.location(this.location);
+
   @override
   State<CategoryView> createState() => _CategoryViewState(location);
 }
