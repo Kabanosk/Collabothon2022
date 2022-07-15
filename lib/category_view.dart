@@ -2,24 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import './map_view.dart';
 import './model/place.dart';
+import 'location.dart';
+import 'main_view_un.dart';
 
 Set<String> globalSelectedItems = {};
 
 class CategoryView extends StatefulWidget {
-  final Position? location;
-  CategoryView(this.location);
+  CategoryView({Key? key}) : super(key: key);
   @override
-  State<CategoryView> createState() => _CategoryViewState(location);
+  State<CategoryView> createState() => _CategoryViewState();
 }
 
 class _CategoryViewState extends State<CategoryView> {
-  Position? location;
   Set<String> _selectedItems = {};
   bool _categoryView = true;
   num _distanceFilter = 0;
   List<Place> _filteredPlaces = [];
   List<Place> _allPlaces = [];
-  _CategoryViewState(this.location);
 
   @override
   void initState() {
@@ -28,6 +27,16 @@ class _CategoryViewState extends State<CategoryView> {
       setState(() {
         _allPlaces = data;
         // print(_allPlaces.first.tags);
+      });
+    });
+    fetchLocation();
+  }
+
+  void fetchLocation() {
+    determinePosition().then((data) {
+      setState(() {
+        location = data;
+        print(location);
       });
     });
   }
@@ -42,8 +51,9 @@ class _CategoryViewState extends State<CategoryView> {
   List<Place> FilterPlacesByDistance(List<Place> places) {
     return places
         .where((element) =>
-            Geolocator.distanceBetween(
-                location!.latitude, location!.longitude, element.x, element.y) <
+            Geolocator.distanceBetween(location!.latitude, location!.longitude,
+                    element.y, element.x) /
+                1000 <=
             _distanceFilter)
         .toList();
   }
@@ -74,7 +84,8 @@ class _CategoryViewState extends State<CategoryView> {
       });
       setState(() {
         _filteredPlaces = FilterPlaces(globalSelectedItems);
-        print(location == null);
+        print("Is location null?");
+        print(location);
         if (_distanceFilter > 0 && location != null) {
           _filteredPlaces = FilterPlacesByDistance(_filteredPlaces);
           print("Filtering by distance");
