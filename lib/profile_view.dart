@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
 import 'package:flutter/material.dart';
+import './chat_view.dart';
+import 'start.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -23,6 +25,8 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
+  List<String> gmail = [user.name as String, '@gmail.com'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,10 +40,10 @@ class _ProfileViewState extends State<ProfileView> {
           children: [
             _profileImage(),
             Text(
-              'Jan Papież 2',
+              user.name as String,
               style: TextStyle(fontSize: 25, letterSpacing: 1),
             ),
-            Text('jp2gmd@gmail.com',
+            Text(gmail.join(),
                 style: TextStyle(fontSize: 25, letterSpacing: 1)),
             Row(
               children: [
@@ -51,8 +55,8 @@ class _ProfileViewState extends State<ProfileView> {
                         padding: EdgeInsets.all(10),
                         textStyle: TextStyle(fontSize: 17))),
                 TextButton(
-                    child: Text('Wyloguj'),
-                    onPressed: () => {},
+                    child: Text('Logout'),
+                    onPressed: (context) => LoginView();
                     style: TextButton.styleFrom(
                         padding: EdgeInsets.all(30),
                         textStyle: TextStyle(fontSize: 17))),

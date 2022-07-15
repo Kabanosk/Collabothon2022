@@ -31,24 +31,16 @@ class chatPanel extends StatefulWidget {
 class _chatPanelState extends State<chatPanel> {
   int currentlyDisplayed = -1;
 
-<<<<<<< HEAD
   final ChatUser user = ChatUser(
     name: "Kojmas",
     uid: "2",
   );
-=======
-  // final ChatUser user = ChatUser(
-  //   name: "Jan Papież 2",
-  //   uid: "1",
-  //   );
->>>>>>> 5caa09d118d17df0f5ddffa47399f62e5199ab14
 
   final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
 
   List<ChatMessage> messages = <ChatMessage>[];
   var m = <ChatMessage>[];
   String uid2 = '';
-
 
   void displayChatWindow(int index, List<Map<String, String>> chatmates) {
     setState(() {
@@ -57,9 +49,8 @@ class _chatPanelState extends State<chatPanel> {
     _pushChatConversation(index, chatmates);
   }
 
-  Widget chatmateConversation(String chatmate, String uid,
-   BuildContext context) {
-
+  Widget chatmateConversation(
+      String chatmate, String uid, BuildContext context) {
     TextEditingController fieldController = TextEditingController();
 
     void onSend(ChatMessage message) {
@@ -99,7 +90,7 @@ class _chatPanelState extends State<chatPanel> {
               );
             } else {
               List<DocumentSnapshot> items = snapshot.data!.docs;
-               messages = items
+              messages = items
                   .map((i) =>
                       ChatMessage.fromJson(i.data()! as Map<dynamic, dynamic>))
                   .toList()
@@ -157,15 +148,12 @@ class _chatPanelState extends State<chatPanel> {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (context) {
-          return chatmateConversation(
-              chatmates[index]['name'] as String,
-              chatmates[index]['uid'] as String,
-              context);
+          return chatmateConversation(chatmates[index]['name'] as String,
+              chatmates[index]['uid'] as String, context);
         },
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
