@@ -51,23 +51,22 @@ class _CategoryViewState extends State<CategoryView> {
   }
 
   List<Place> FilterPlacesByDistance(List<Place> places) {
-    return places
-        .where((element) =>
-            Geolocator.distanceBetween(location!.latitude, location!.longitude,
-                    element.y, element.x) /
-                1000 <=
-            _distanceFilter)
-        .toList();
+    return places.where((element) {
+      double distance = Geolocator.distanceBetween(
+              location!.latitude, location!.longitude, element.x, element.y) /
+          1000;
+      return distance <= _distanceFilter;
+    }).toList();
   }
 
   void _showMultiSelect(int index) async {
     // a list of selectable items
     // these items can be hard-coded or dynamically fetched from a database/API
     final List<List<String>> _items = [
-      ['Medicine', 'Food', 'Fuel', 'Water', 'Clothing', 'Beer'],
-      ['Hostel', 'Hotel', 'Apartment', 'Flat'],
-      ['Bus station', 'Train station', 'Airport'],
-      ['Charities', 'Church', 'UA embassy', 'City council']
+      ['medicine', 'food', 'fuel', 'water', 'clothing', 'beer'],
+      ['hostel', 'hotel', 'apartment', 'flat'],
+      ['bus station', 'train station', 'airport'],
+      ['charities', 'church', 'ua embassy', 'city council']
     ];
 
     final Set<String>? results = await showDialog(
