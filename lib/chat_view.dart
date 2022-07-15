@@ -31,18 +31,6 @@ class chatPanel extends StatefulWidget {
 class _chatPanelState extends State<chatPanel> {
   int currentlyDisplayed = -1;
 
-<<<<<<< HEAD
-  final ChatUser user = ChatUser(
-    name: "Kojmas",
-    uid: "2",
-  );
-=======
-  // final ChatUser user = ChatUser(
-  //   name: "Jan Papież 2",
-  //   uid: "1",
-  //   );
->>>>>>> 5caa09d118d17df0f5ddffa47399f62e5199ab14
-
   final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
 
   List<ChatMessage> messages = <ChatMessage>[];

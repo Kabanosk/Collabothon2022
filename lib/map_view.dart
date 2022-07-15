@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collabothon/chat_view.dart';
+import 'package:dash_chat/dash_chat.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:custom_info_window/custom_info_window.dart';
@@ -9,6 +11,8 @@ import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
 CollectionReference _placesRef =
     FirebaseFirestore.instance.collection('places');
+
+CollectionReference _usersRef = FirebaseFirestore.instance.collection('users');
 
 Future<List<Place>> getPlaces() async {
   List<Place> listOfPlaces = [];
@@ -19,6 +23,17 @@ Future<List<Place>> getPlaces() async {
     listOfPlaces.add(Place.fromJson(data));
   }
   return listOfPlaces;
+}
+
+Future<List<String>> getUsernames() async {
+  List<String> listOfUsers = [];
+  var querySnapshot = await _usersRef.get();
+  for (var queryDocumentSnapshot in querySnapshot.docs) {
+    Map<String, dynamic> data =
+        queryDocumentSnapshot.data() as Map<String, dynamic>;
+    listOfUsers.add(data['name']);
+  }
+  return listOfUsers;
 }
 
 class MapView extends StatefulWidget {
@@ -54,11 +69,21 @@ class MapViewState extends State<MapView> {
     'social help': 0.0
   };
 
-  Set<Marker> updateMarkers(List<Place> map) {
+  Set<Marker> updateMarkers(List<Place> map, List<String> names) {
     Set<Marker> _markers = {};
+    int i = 0;
     for (var element in map) {
-      _markers.add(createMarker(element.id, element.name, element.descryption,
-          element.x, element.y, element.type, element.number));
+      _markers.add(createMarker(
+          element.id,
+          element.name,
+          element.descryption,
+          element.x,
+          element.y,
+          element.type,
+          element.number,
+          element.uid,
+          names[i]));
+      i++;
     }
     return _markers;
   }
@@ -68,8 +93,116 @@ class MapViewState extends State<MapView> {
     await FlutterPhoneDirectCaller.callNumber(number);
   }
 
+  Widget chatmateConversation(
+      String chatmate, String uid, BuildContext context) {
+    TextEditingController fieldController = TextEditingController();
+    final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
+
+    List<ChatMessage> messages = <ChatMessage>[];
+
+    void onSend(ChatMessage message) {
+      print(message.toJson());
+      message.customProperties = {'messageTo': uid};
+      FirebaseFirestore.instance
+          .collection('messages')
+          .doc(DateTime.now().millisecondsSinceEpoch.toString())
+          .set(message.toJson());
+
+      setState(() {
+        messages.add(ChatMessage(
+          text: message.text,
+          createdAt: DateTime.now(),
+          user: message.user,
+        ));
+
+        messages = [...messages];
+      });
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: Row(children: [Text(chatmate)])),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('messages')
+              .orderBy("createdAt")
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).primaryColor,
+                  ),
+                ),
+              );
+            } else {
+              List<DocumentSnapshot> items = snapshot.data!.docs;
+              messages = items
+                  .map((i) =>
+                      ChatMessage.fromJson(i.data()! as Map<dynamic, dynamic>))
+                  .toList()
+                  .where((i) =>
+                      (i.user.uid == user.uid &&
+                          i.customProperties!['messageTo'] == uid) ||
+                      (i.user.uid == uid &&
+                          i.customProperties!['messageTo'] == user.uid))
+                  .toList();
+              return DashChat(
+                key: _chatViewKey,
+                inverted: false,
+                onSend: onSend,
+                sendOnEnter: true,
+                textInputAction: TextInputAction.send,
+                user: user,
+                inputDecoration:
+                    InputDecoration.collapsed(hintText: "Add message here..."),
+                dateFormat: DateFormat('yyyy-MMM-dd'),
+                timeFormat: DateFormat('HH:mm'),
+                messages: messages,
+                showUserAvatar: false,
+                showAvatarForEveryMessage: false,
+                scrollToBottom: false,
+                inputMaxLines: 5,
+                messageContainerPadding: EdgeInsets.only(left: 5.0, right: 5.0),
+                alwaysShowSend: true,
+                inputTextStyle: TextStyle(fontSize: 16.0),
+                inputContainerStyle: BoxDecoration(
+                  border: Border.all(width: 0.0),
+                  color: Colors.white,
+                ),
+                onQuickReply: (Reply reply) {
+                  setState(() {
+                    messages.add(ChatMessage(
+                        text: reply.value,
+                        createdAt: DateTime.now(),
+                        user: user));
+
+                    messages = [...messages];
+                  });
+                },
+                onLoadEarlier: () {
+                  print("laoding...");
+                },
+                shouldShowLoadEarlier: false,
+                showTraillingBeforeSend: true,
+              );
+            }
+          }),
+    );
+  }
+
+  _openChat(String uid, String name) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) {
+          return chatmateConversation(name, uid, context);
+        },
+      ),
+    );
+  }
+
   Marker createMarker(String id, String name, String desc, double X, double Y,
-      String type, String phoneNumber) {
+      String type, String phoneNumber, String uid, String uname) {
     return Marker(
         markerId: MarkerId(id),
         position: LatLng(X, Y),
@@ -154,7 +287,7 @@ class MapViewState extends State<MapView> {
                             child: ElevatedButton(
                               child: const Text("Chat"),
                               onPressed: () {
-                                _callNumber(phoneNumber); // JEBAĆ DISA
+                                _openChat(uid, uname);
                               },
                             ),
                           ),
@@ -172,8 +305,10 @@ class MapViewState extends State<MapView> {
   void initState() {
     super.initState();
     getPlaces().then((data) {
-      setState(() {
-        _markers = updateMarkers(data);
+      getUsernames().then((names) {
+        setState(() {
+          _markers = updateMarkers(data, names);
+        });
       });
     });
   }
