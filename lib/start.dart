@@ -79,7 +79,7 @@ Widget chatmatesList(List<Map<String, String>> profiles, Function chooseLogin) {
             style: const TextStyle(fontSize: 18, color: Color(0xFF000000)),
           ),
           leading: const Icon(
-            Icons.chat_bubble,
+            Icons.person,
             color: Colors.blueAccent,
             semanticLabel: 'Filter categories',
           ),

@@ -63,7 +63,7 @@ class _CategoryViewState extends State<CategoryView> {
     // a list of selectable items
     // these items can be hard-coded or dynamically fetched from a database/API
     final List<List<String>> _items = [
-      ['medicine', 'food', 'fuel', 'water', 'clothing', 'beer'],
+      ['medicine', 'food', 'fuel', 'water', 'clothing'],
       ['hostel', 'hotel', 'apartment', 'flat'],
       ['bus station', 'train station', 'airport'],
       ['charities', 'church', 'ua embassy', 'city council']
