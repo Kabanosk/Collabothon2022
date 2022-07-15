@@ -149,7 +149,7 @@ class _MainViewState extends State<MainView> {
                   controller: xController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: 'Enter a Latency',
+                    hintText: 'Enter a Latitude',
                   ),
                 ),
                 TextField(
