@@ -27,6 +27,11 @@ class chatPanel extends StatefulWidget {
 class _chatPanelState extends State<chatPanel> {
   int currentlyDisplayed = -1;
 
+  final ChatUser user = ChatUser(
+    name: "Kojmas",
+    uid: "2",
+  );
+
   // final ChatUser user = ChatUser(
   //   name: "Jan Papież 2",
   //   uid: "1",
@@ -145,15 +150,9 @@ class _chatPanelState extends State<chatPanel> {
     _pushChatConversation(index, chatmates);
   }
 
-  Widget chatmateConversation(
-      String chatmate,String uid, List<ChatMessage> messages, BuildContext context) {
-
-   TextEditingController fieldController = TextEditingController();
-
-   final ChatUser user = ChatUser(
-     name: "Jan Papież 2",
-     uid: "1",
-     );
+  Widget chatmateConversation(String chatmate, String uid,
+      List<ChatMessage> messages, BuildContext context) {
+    TextEditingController fieldController = TextEditingController();
 
     void onSend(ChatMessage message) {
       print(message.toJson());
@@ -165,10 +164,10 @@ class _chatPanelState extends State<chatPanel> {
 
       setState(() {
         messages.add(ChatMessage(
-            text: message.text, 
-            createdAt: DateTime.now(), 
-            user: message.user,
-            ));
+          text: message.text,
+          createdAt: DateTime.now(),
+          user: message.user,
+        ));
 
         messages = [...messages];
       });
@@ -192,10 +191,16 @@ class _chatPanelState extends State<chatPanel> {
               );
             } else {
               List<DocumentSnapshot> items = snapshot.data!.docs;
-              List<ChatMessage> messages =
-                  items.map((i) => ChatMessage.fromJson(i.data()! as Map<dynamic, dynamic>)).toList()
-                  .where((i) => (i.user.uid == user.uid && i.customProperties!['messageTo'] == uid) ||
-                                (i.user.uid == uid && i.customProperties!['messageTo'] == user.uid)).toList();
+              List<ChatMessage> messages = items
+                  .map((i) =>
+                      ChatMessage.fromJson(i.data()! as Map<dynamic, dynamic>))
+                  .toList()
+                  .where((i) =>
+                      (i.user.uid == user.uid &&
+                          i.customProperties!['messageTo'] == uid) ||
+                      (i.user.uid == uid &&
+                          i.customProperties!['messageTo'] == user.uid))
+                  .toList();
               return DashChat(
                 key: _chatViewKey,
                 inverted: false,
@@ -228,7 +233,6 @@ class _chatPanelState extends State<chatPanel> {
 
                     messages = [...messages];
                   });
-
                 },
                 onLoadEarlier: () {
                   print("laoding...");
@@ -246,7 +250,10 @@ class _chatPanelState extends State<chatPanel> {
       MaterialPageRoute<void>(
         builder: (context) {
           return chatmateConversation(
-              chatmates[index]['name'] as String, chatmates[index]['uid'] as String,  getMessages(chatmates[index]['uid'] as String), context);
+              chatmates[index]['name'] as String,
+              chatmates[index]['uid'] as String,
+              getMessages(chatmates[index]['uid'] as String),
+              context);
         },
       ),
     );
@@ -288,9 +295,7 @@ class _chatPanelState extends State<chatPanel> {
     return Scaffold(
       appBar: AppBar(title: Row(children: [Text('Friend List')])),
       body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('users')
-              .snapshots(),
+          stream: FirebaseFirestore.instance.collection('users').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(
@@ -302,7 +307,11 @@ class _chatPanelState extends State<chatPanel> {
               );
             } else {
               List<DocumentSnapshot> items = snapshot.data!.docs;
-              List<Map<String, String>> friends = items.map((i) => {'name': i['name'] as String, 'uid': i['uid'] as String}).toList();
+              List<Map<String, String>> friends = items
+                  .map((i) =>
+                      {'name': i['name'] as String, 'uid': i['uid'] as String})
+                  .where((element) => element['uid'] != user.uid)
+                  .toList();
               return chatmatesList(friends, displayChatWindow);
             }
           }),
@@ -310,28 +319,28 @@ class _chatPanelState extends State<chatPanel> {
   }
 }
 
-Widget chatmatesList(List<Map<String, String>> chatmates, Function displayChatWindow) {
+Widget chatmatesList(
+    List<Map<String, String>> chatmates, Function displayChatWindow) {
   return Scaffold(
       body: ListView.builder(
-        itemCount: chatmates.length * 2,
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, i) {
-          if (i.isOdd) return const Divider();
+    itemCount: chatmates.length * 2,
+    padding: const EdgeInsets.all(16.0),
+    itemBuilder: (context, i) {
+      if (i.isOdd) return const Divider();
 
-          final index = i ~/ 2;
+      final index = i ~/ 2;
 
-          return ListTile(
-              title: Text(
-                chatmates[index]['name']!,
-                style: const TextStyle(fontSize: 18, color: Color(0xFF000000)),
-              ),
-              leading: const Icon(
-                Icons
-                    .chat_bubble, 
-                color: Colors.blueAccent,
-                semanticLabel: 'Filter categories',
-              ),
-              onTap: () => displayChatWindow(index, chatmates));
-        },
-      ));
+      return ListTile(
+          title: Text(
+            chatmates[index]['name']!,
+            style: const TextStyle(fontSize: 18, color: Color(0xFF000000)),
+          ),
+          leading: const Icon(
+            Icons.chat_bubble,
+            color: Colors.blueAccent,
+            semanticLabel: 'Filter categories',
+          ),
+          onTap: () => displayChatWindow(index, chatmates));
+    },
+  ));
 }
