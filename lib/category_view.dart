@@ -4,9 +4,15 @@ import './map_view.dart';
 import './model/place.dart';
 import 'location.dart';
 import 'main_view_un.dart';
-import 'start.dart';
+import 'map_view.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
 Set<String> globalSelectedItems = {};
+
+_callNumber(String phoneNumber) async {
+  String number = phoneNumber;
+  await FlutterPhoneDirectCaller.callNumber(number);
+}
 
 class CategoryView extends StatefulWidget {
   CategoryView({Key? key}) : super(key: key);
@@ -139,6 +145,68 @@ class _CategoryViewState extends State<CategoryView> {
   Widget placeInfo(BuildContext context, Place place) {
     return Scaffold(
       appBar: AppBar(),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+            child: Row(
+              children: [
+                SizedBox(
+                  //width: 100,
+                  child: Text(
+                    place.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+            child: Text(
+              place.descryption,
+              maxLines: 2,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+            child: Row(
+              children: [
+                Icon(IconData(0xe4a2, fontFamily: 'MaterialIcons')),
+                SizedBox(
+                  width: 10,
+                ),
+                SizedBox(
+                  width: 80,
+                  height: 30,
+                  child: ElevatedButton(
+                    child: const Text("Call"),
+                    onPressed: () {
+                      _callNumber(place.number);
+                    },
+                  ),
+                ),
+                Spacer(),
+                /*SizedBox(
+                  width: 80,
+                  height: 30,
+                  child: ElevatedButton(
+                    child: const Text("Chat"),
+                    onPressed: () {
+                      _openChat(place.uid, place.name);
+                      // _callNumber(phoneNumber);
+                    },
+                  ),
+                ),*/
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -240,12 +308,21 @@ class _CategoryViewState extends State<CategoryView> {
                   final index = i ~/ 2;
 
                   return ListTile(
-                      title: Text(
-                        _filteredPlaces[index].name,
-                        style: const TextStyle(
-                            fontSize: 18, color: Color(0xFF000000)),
-                      ),
-                      onTap: () => _pushPlaceInfo(index));
+                    leading: Icon(Icons.location_pin),
+                    title: Text(
+                      _filteredPlaces[index].name,
+                      style: const TextStyle(
+                          fontSize: 18, color: Color(0xFF000000)),
+                    ),
+                    subtitle: Column(
+                      children: [
+                        Text(_filteredPlaces[index].number),
+                        Text(_filteredPlaces[index].descryption),
+                      ],
+                    ),
+                    isThreeLine: true,
+                    onTap: () => _pushPlaceInfo(index),
+                  ); // TO DO: clicking this should bring info about the location
                 }));
   }
 }
