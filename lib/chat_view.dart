@@ -291,7 +291,7 @@ class _chatPanelState extends State<chatPanel> {
   }
 
   @override
-  Widget build(BuildContext) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Row(children: [Text('Friend List')])),
       body: StreamBuilder<QuerySnapshot>(

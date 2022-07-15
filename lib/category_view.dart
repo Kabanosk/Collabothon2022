@@ -18,6 +18,7 @@ class _CategoryViewState extends State<CategoryView> {
   Set<String> _selectedItems = {};
   bool _categoryView = true;
   num _distanceFilter = 0;
+  bool _inputViability = false;
   List<Place> _filteredPlaces = [];
   List<Place> _allPlaces = [];
 
@@ -83,16 +84,6 @@ class _CategoryViewState extends State<CategoryView> {
         globalSelectedItems = Set.from(results);
         //_categoryView = false;
       });
-      setState(() {
-        _filteredPlaces = FilterPlaces(globalSelectedItems);
-        print("Is location null?");
-        print(location);
-        if (_distanceFilter > 0 && location != null) {
-          _filteredPlaces = FilterPlacesByDistance(_filteredPlaces);
-          print("Filtering by distance");
-        }
-        print(_filteredPlaces);
-      });
     }
     print(globalSelectedItems);
   }
@@ -105,10 +96,55 @@ class _CategoryViewState extends State<CategoryView> {
     });
   }
 
+  void checkInputViability(String input) {
+    setState(() {
+      num? number = num.tryParse(input);
+      if (number != null && number > 0)
+        _inputViability = true;
+      else
+        _inputViability = false;
+    });
+  }
+
   void toggleCategories() {
     setState(() {
       _categoryView = !_categoryView;
     });
+  }
+
+  void showFilteredPlaces() {
+    toggleCategories();
+    setState(() {
+      if (globalSelectedItems.isNotEmpty) {
+        _filteredPlaces = FilterPlaces(globalSelectedItems);
+        if (_distanceFilter > 0 && location != null) {
+          _filteredPlaces = FilterPlacesByDistance(_filteredPlaces);
+          print("Filtering by distance");
+        }
+      } else {
+        _filteredPlaces = _allPlaces;
+        if (_distanceFilter > 0 && location != null) {
+          _filteredPlaces = FilterPlacesByDistance(_filteredPlaces);
+        }
+      }
+      print(_filteredPlaces);
+    });
+  }
+
+  void _pushPlaceInfo(int index) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) {
+          return placeInfo(context, _filteredPlaces[index]);
+        },
+      ),
+    );
+  }
+
+  Widget placeInfo(BuildContext context, Place place) {
+    return Scaffold(
+      appBar: AppBar(),
+    );
   }
 
   @override
@@ -131,7 +167,7 @@ class _CategoryViewState extends State<CategoryView> {
                 child: FloatingActionButton(
                   elevation: 0,
                   hoverElevation: 0,
-                  onPressed: () => toggleCategories(),
+                  onPressed: toggleCategories,
                   backgroundColor: Theme.of(context).primaryColor,
                   child: const Icon(Icons.arrow_back),
                 ),
@@ -141,7 +177,7 @@ class _CategoryViewState extends State<CategoryView> {
                 child: FloatingActionButton(
                   elevation: 0,
                   hoverElevation: 0,
-                  onPressed: toggleCategories,
+                  onPressed: showFilteredPlaces,
                   backgroundColor: Theme.of(context).primaryColor,
                   child: const Icon(Icons.save),
                 ),
@@ -154,35 +190,36 @@ class _CategoryViewState extends State<CategoryView> {
                   if (i.isOdd) return const Divider();
                   if (i > 6) {
                     return ListTile(
-                        title: Row(
-                          children: <Widget>[
-                            Expanded(
-                                child: Text(
-                              'Distance Radius',
-                              style: const TextStyle(
-                                  fontSize: 18, color: Color(0xFF000000)),
-                            )),
-                            Expanded(
-                              child: TextField(
-                                obscureText: false,
-                                onSubmitted: saveDistanceFilter,
-                                keyboardType: TextInputType.numberWithOptions(
-                                    decimal: false, signed: false),
-                                // inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[\\-|\\ ]'))],
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'eg. 50 km',
-                                ),
+                      title: Row(
+                        children: <Widget>[
+                          Expanded(
+                              child: Text(
+                            'Distance Radius',
+                            style: const TextStyle(
+                                fontSize: 18, color: Color(0xFF000000)),
+                          )),
+                          Expanded(
+                            child: TextField(
+                              obscureText: false,
+                              onSubmitted: saveDistanceFilter,
+                              onChanged: checkInputViability,
+                              keyboardType: TextInputType.numberWithOptions(
+                                  decimal: false, signed: false),
+                              // inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[\\-|\\ ]'))],
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText:
+                                    "Currently: " + _distanceFilter.toString(),
                               ),
                             ),
-                          ],
-                        ),
-                        trailing: IconButton(
-                          icon: new Icon(Icons.check),
-                          color: Colors.black26,
-                          onPressed:
-                              null, // TO DO: This should save a filter by distance radius
-                        ));
+                          ),
+                        ],
+                      ),
+                      trailing: new Icon(
+                        _inputViability ? Icons.check : Icons.close,
+                        color: _inputViability ? Colors.green : Colors.red,
+                      ),
+                    );
                   } else {
                     final index = i ~/ 2;
                     return ListTile(
@@ -214,8 +251,8 @@ class _CategoryViewState extends State<CategoryView> {
                         style: const TextStyle(
                             fontSize: 18, color: Color(0xFF000000)),
                       ),
-                      onTap:
-                          null); // TO DO: clicking this should bring info about the location
+                      onTap: () => _pushPlaceInfo(
+                          index)); // TO DO: clicking this should bring info about the location
                 }));
   }
 }
