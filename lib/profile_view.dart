@@ -36,7 +36,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Cool profile'),
+          title: const Text('My Profile'),
         ),
         body: Center(
             child: SingleChildScrollView(
@@ -51,13 +51,13 @@ class _ProfileViewState extends State<ProfileView> {
                 style: TextStyle(fontSize: 25, letterSpacing: 1)),
             Row(
               children: [
-                TextButton(
+                /*TextButton(
                     child: Text('Switch\n profile role',
                         textAlign: TextAlign.center),
                     onPressed: () => {},
                     style: TextButton.styleFrom(
                         padding: EdgeInsets.all(10),
-                        textStyle: TextStyle(fontSize: 17))),
+                        textStyle: TextStyle(fontSize: 17))),*/
                 TextButton(
                     child: Text('Logout'),
                     onPressed: () => {LogOut()},
