@@ -1,17 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import './map_view.dart';
+import './model/place.dart';
 
-Set<String> selectedItems = {};
+Set<String> globalSelectedItems = {};
 
 class CategoryView extends StatefulWidget {
-  const CategoryView({Key? key}) : super(key: key);
-
+  final Position? location;
+  CategoryView(this.location);
   @override
-  State<CategoryView> createState() => _CategoryViewState();
+  State<CategoryView> createState() => _CategoryViewState(location);
 }
 
 class _CategoryViewState extends State<CategoryView> {
+  Position? location;
   Set<String> _selectedItems = {};
   bool _categoryView = true;
+  num _distanceFilter = 0;
+  List<Place> _filteredPlaces = [];
+  List<Place> _allPlaces = [];
+  _CategoryViewState(this.location);
+
+  @override
+  void initState() {
+    super.initState();
+    getPlaces().then((data) {
+      setState(() {
+        _allPlaces = data;
+        // print(_allPlaces.first.tags);
+      });
+    });
+  }
+
+  List<Place> FilterPlaces(Set<String> selectedCategories) {
+    return _allPlaces
+        .where((element) =>
+            element.tags.any((tag) => selectedCategories.contains(tag)))
+        .toList();
+  }
+
+  List<Place> FilterPlacesByDistance(List<Place> places) {
+    return places
+        .where((element) =>
+            Geolocator.distanceBetween(
+                location!.latitude, location!.longitude, element.x, element.y) <
+            _distanceFilter)
+        .toList();
+  }
 
   void _showMultiSelect(int index) async {
     // a list of selectable items
@@ -34,11 +69,28 @@ class _CategoryViewState extends State<CategoryView> {
     if (results != null) {
       setState(() {
         _selectedItems = Set.from(results);
-        selectedItems = Set.from(results);
+        globalSelectedItems = Set.from(results);
         //_categoryView = false;
       });
+      setState(() {
+        _filteredPlaces = FilterPlaces(globalSelectedItems);
+        print(location == null);
+        if (_distanceFilter > 0 && location != null) {
+          _filteredPlaces = FilterPlacesByDistance(_filteredPlaces);
+          print("Filtering by distance");
+        }
+        print(_filteredPlaces);
+      });
     }
-    print(selectedItems);
+    print(globalSelectedItems);
+  }
+
+  void saveDistanceFilter(String distance) {
+    setState(() {
+      _distanceFilter = num.parse(distance);
+      if (_distanceFilter < 0) _distanceFilter = 0;
+      print(_distanceFilter);
+    });
   }
 
   void toggleCategories() {
@@ -53,7 +105,8 @@ class _CategoryViewState extends State<CategoryView> {
       'supplies',
       'accomodation',
       'transport',
-      'social help'
+      'social help',
+      'distance',
     ];
 
     return Scaffold(
@@ -76,7 +129,7 @@ class _CategoryViewState extends State<CategoryView> {
                 child: FloatingActionButton(
                   elevation: 0,
                   hoverElevation: 0,
-                  onPressed: () => toggleCategories(),
+                  onPressed: toggleCategories,
                   backgroundColor: Theme.of(context).primaryColor,
                   child: const Icon(Icons.save),
                 ),
@@ -87,25 +140,56 @@ class _CategoryViewState extends State<CategoryView> {
                 padding: const EdgeInsets.all(16.0),
                 itemBuilder: (context, i) {
                   if (i.isOdd) return const Divider();
-
-                  final index = i ~/ 2;
-
-                  return ListTile(
-                      title: Text(
-                        categories[index],
-                        style: const TextStyle(
-                            fontSize: 18, color: Color(0xFF000000)),
-                      ),
-                      leading: const Icon(
-                        Icons.keyboard_double_arrow_right_sharp,
-                        color: Colors.blueAccent,
-                        semanticLabel: 'Filter categories',
-                      ),
-                      onTap: () => _showMultiSelect(index));
+                  if (i > 6) {
+                    return ListTile(
+                        title: Row(
+                          children: <Widget>[
+                            Expanded(
+                                child: Text(
+                              'Distance Radius',
+                              style: const TextStyle(
+                                  fontSize: 18, color: Color(0xFF000000)),
+                            )),
+                            Expanded(
+                              child: TextField(
+                                obscureText: false,
+                                onSubmitted: saveDistanceFilter,
+                                keyboardType: TextInputType.numberWithOptions(
+                                    decimal: false, signed: false),
+                                // inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[\\-|\\ ]'))],
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'eg. 50 km',
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        trailing: IconButton(
+                          icon: new Icon(Icons.check),
+                          color: Colors.black26,
+                          onPressed:
+                              null, // TO DO: This should save a filter by distance radius
+                        ));
+                  } else {
+                    final index = i ~/ 2;
+                    return ListTile(
+                        title: Text(
+                          categories[index],
+                          style: const TextStyle(
+                              fontSize: 18, color: Color(0xFF000000)),
+                        ),
+                        leading: const Icon(
+                          Icons.keyboard_double_arrow_right_sharp,
+                          color: Colors.blueAccent,
+                          semanticLabel: 'Filter Categories',
+                        ),
+                        onTap: () => _showMultiSelect(index));
+                  }
                 },
               )
             : ListView.builder(
-                itemCount: selectedItems.length * 2,
+                itemCount: _filteredPlaces.length * 2,
                 padding: const EdgeInsets.all(16.0),
                 itemBuilder: (context, i) {
                   if (i.isOdd) return const Divider();
@@ -114,7 +198,7 @@ class _CategoryViewState extends State<CategoryView> {
 
                   return ListTile(
                       title: Text(
-                        selectedItems.elementAt(index),
+                        _filteredPlaces[index].name,
                         style: const TextStyle(
                             fontSize: 18, color: Color(0xFF000000)),
                       ),
@@ -134,7 +218,7 @@ class MultiSelect extends StatefulWidget {
 
 class _MultiSelectState extends State<MultiSelect> {
   // this variable holds the selected items
-  final Set<String> _selectedItems = Set.from(selectedItems);
+  final Set<String> _selectedItems = Set.from(globalSelectedItems);
 
 // This function is triggered when a checkbox is checked or unchecked
   void _itemChange(String itemValue, bool isSelected) {

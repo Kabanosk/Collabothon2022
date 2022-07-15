@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 class Place {
   String id;
   final String descryption;
   final String name;
   final String type;
+  final List<String> tags;
   final double x;
   final double y;
   final String number;
@@ -12,6 +15,7 @@ class Place {
     required this.descryption,
     required this.name,
     required this.type,
+    required this.tags,
     required this.x,
     required this.y,
     required this.number,
@@ -22,6 +26,7 @@ class Place {
         'descryption': descryption,
         'name': name,
         'type': type,
+        'tags': tags,
         'x': x,
         'y': y,
         'number': number,
@@ -32,6 +37,7 @@ class Place {
         descryption: json['descryption'],
         name: json['name'],
         type: json['type'],
+        tags: List.from(json['tags']),
         x: json['x'],
         y: json['y'],
         number: json['number'],
