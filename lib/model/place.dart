@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class Place {
-  String id;
+  final String id;
   final String descryption;
   final String name;
   final String type;
@@ -9,9 +9,10 @@ class Place {
   final double x;
   final double y;
   final String number;
+  final String uid;
 
   Place({
-    this.id = '',
+    required this.id,
     required this.descryption,
     required this.name,
     required this.type,
@@ -19,6 +20,7 @@ class Place {
     required this.x,
     required this.y,
     required this.number,
+    required this.uid,
   });
 
   Map<String, dynamic> toJson() => {
@@ -30,6 +32,7 @@ class Place {
         'x': x,
         'y': y,
         'number': number,
+        'uid': uid,
       };
 
   static Place fromJson(Map<String, dynamic> json) => Place(
@@ -41,5 +44,6 @@ class Place {
         x: json['x'],
         y: json['y'],
         number: json['number'],
+        uid: json['uid'],
       );
 }

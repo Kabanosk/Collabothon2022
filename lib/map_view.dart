@@ -57,15 +57,8 @@ class MapViewState extends State<MapView> {
   Set<Marker> updateMarkers(List<Place> map) {
     Set<Marker> _markers = {};
     for (var element in map) {
-      _markers.add(createMarker(
-        element.id,
-        element.name,
-        element.descryption,
-        element.x,
-        element.y,
-        element.type,
-        element.number
-      ));
+      _markers.add(createMarker(element.id, element.name, element.descryption,
+          element.x, element.y, element.type, element.number));
     }
     return _markers;
   }
@@ -151,6 +144,17 @@ class MapViewState extends State<MapView> {
                               child: const Text("Call"),
                               onPressed: () {
                                 _callNumber(phoneNumber);
+                              },
+                            ),
+                          ),
+                          Spacer(),
+                          SizedBox(
+                            width: 80,
+                            height: 30,
+                            child: ElevatedButton(
+                              child: const Text("Chat"),
+                              onPressed: () {
+                                _callNumber(phoneNumber); // JEBAĆ DISA
                               },
                             ),
                           ),

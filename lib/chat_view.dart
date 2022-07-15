@@ -2,6 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:dash_chat/dash_chat.dart';
 
+final ChatUser user = ChatUser(
+  name: "Kojmas",
+  uid: "2",
+);
+
 class ChatView extends StatefulWidget {
   const ChatView({Key? key}) : super(key: key);
 
@@ -26,10 +31,17 @@ class chatPanel extends StatefulWidget {
 class _chatPanelState extends State<chatPanel> {
   int currentlyDisplayed = -1;
 
+<<<<<<< HEAD
   final ChatUser user = ChatUser(
     name: "Kojmas",
     uid: "2",
   );
+=======
+  // final ChatUser user = ChatUser(
+  //   name: "Jan Papież 2",
+  //   uid: "1",
+  //   );
+>>>>>>> 5caa09d118d17df0f5ddffa47399f62e5199ab14
 
   final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
 
@@ -156,7 +168,7 @@ class _chatPanelState extends State<chatPanel> {
 
 
   @override
-  Widget build(BuildContext) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Row(children: [Text('Friend List')])),
       body: StreamBuilder<QuerySnapshot>(
