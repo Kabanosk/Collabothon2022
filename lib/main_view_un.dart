@@ -5,6 +5,7 @@ import './category_view.dart';
 import './profile_view.dart';
 import './map_view.dart';
 import './chat_view.dart';
+import './start.dart';
 
 Position? location;
 
@@ -80,13 +81,104 @@ class _MainViewState extends State<MainView> {
     //   ProfileView()
     // ];
 
+    showAddingDialog(BuildContext context) {
+      // set up the button
+      Widget saveButton = TextButton(
+        child: Text("Save"),
+        onPressed: () {},
+      );
+
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        title: Text("Add a new place"),
+        content: Container(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a Name',
+                  ),
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a Descryption',
+                  ),
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a Number',
+                  ),
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a Latency',
+                  ),
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a Longitude',
+                  ),
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a Tags',
+                  ),
+                ),
+                Row(children: [
+                  Text('Select Type'),
+                  DropdownButton<String>(
+                    items: <String>[
+                      'Supplies',
+                      'Accomodation',
+                      'Transport',
+                      'Social Help'
+                    ].map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (_) {},
+                  ),
+                ]),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          saveButton,
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
           title: const Text('Google challenge'),
           leading: IconButton(
             icon: Icon(Icons.gps_fixed),
             onPressed: fetchLocation,
-          )),
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () => showAddingDialog(context),
+            ),
+          ]),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         //currentIndex: 3,

@@ -4,6 +4,7 @@ import './map_view.dart';
 import './model/place.dart';
 import 'location.dart';
 import 'main_view_un.dart';
+import 'start.dart';
 
 Set<String> globalSelectedItems = {};
 
