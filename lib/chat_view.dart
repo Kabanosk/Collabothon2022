@@ -38,6 +38,105 @@ class _chatPanelState extends State<chatPanel> {
   var m = <ChatMessage>[];
   String uid2 = '';
 
+  //Name specifies from who the text has been sent
+  List<Map<String, Object>> chatmateMessages = [
+    {
+      'Id': 0,
+      'Name': 'Jarek',
+      'Content': "Witaj kumplu!",
+      'Time': DateTime.now()
+    },
+    {
+      'Id': 1,
+      'Name': 'Jarek',
+      'Content': "Z chęcią Ci pomogę.",
+      'Time': DateTime.now()
+    },
+    {
+      'Id': 2,
+      'Name': 'Kacper',
+      'Content': "Wszystko będzie dorze.",
+      'Time': DateTime.now()
+    },
+    {
+      'Id': 3,
+      'Name': 'Jarek',
+      'Content': "On nie wiedział o...",
+      'Time': DateTime.now()
+    },
+    {
+      'Id': 4,
+      'Name': 'Wojciech Fiołka',
+      'Content': "Witaj kumplu!",
+      'Time': DateTime.now()
+    },
+    {
+      'Id': 5,
+      'Name': 'Paweł 2',
+      'Content': "Witaj kumplu!",
+      'Time': DateTime.now()
+    },
+    {
+      'Id': 6,
+      'Name': 'Wojciech Fiołka',
+      'Content': "Witaj kumplu!",
+      'Time': DateTime.now()
+    },
+  ];
+
+  //Name specifies to who the text hase been sent
+  List<Map<String, Object>> userMessages = [
+    {
+      'Id': 0,
+      'Name': 'Jarek',
+      'Content': "Witaj kumplu!",
+      'Time': DateTime.now()
+    },
+    {
+      'Id': 1,
+      'Name': 'KAcper',
+      'Content': "Witaj kumplu!",
+      'Time': DateTime.now()
+    },
+    {
+      'Id': 2,
+      'Name': 'Jarek',
+      'Content': "Witaj kumplu!",
+      'Time': DateTime.now()
+    },
+    {
+      'Id': 3,
+      'Name': 'Jan',
+      'Content': "Witaj kumplu!",
+      'Time': DateTime.now()
+    },
+    {
+      'Id': 4,
+      'Name': 'Paweł 2',
+      'Content': "Witaj kumplu!",
+      'Time': DateTime.now()
+    },
+    {
+      'Id': 5,
+      'Name': 'Wojciech Fiołka',
+      'Content': "Witaj kumplu!",
+      'Time': DateTime.now()
+    },
+    {
+      'Id': 6,
+      'Name': 'Wojciech Fiołka',
+      'Content': "Witaj kumplu!",
+      'Time': DateTime.now()
+    },
+  ];
+
+  // List<String> chatmates = [
+  //   'Jarek',
+  //   'Kacper',
+  //   'Jan',
+  //   'Paweł 2',
+  //   'Wojciech Fiołka'
+  // ];
 
   void displayChatWindow(int index, List<Map<String, String>> chatmates) {
     setState(() {
