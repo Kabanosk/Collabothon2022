@@ -60,11 +60,7 @@ class _CategoryViewState extends State<CategoryView> {
 
   void _showMultiSelect(int index) async {
     final List<List<String>> _items = [
-<<<<<<< Updated upstream
-      ['medicine', 'food', 'fuel', 'water', 'clothing'],
-=======
       ['medicine', 'food', 'fuel', 'clothing'],
->>>>>>> Stashed changes
       ['hostel', 'hotel', 'apartment', 'flat'],
       ['bus station', 'train station', 'airport'],
       ['charities', 'church', 'ua embassy', 'city council']
