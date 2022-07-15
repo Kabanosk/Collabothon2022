@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class Place {
-  String id;
+  final String id;
   final String descryption;
   final String name;
   final String type;
@@ -11,7 +11,7 @@ class Place {
   final String number;
 
   Place({
-    this.id = '',
+    required this.id,
     required this.descryption,
     required this.name,
     required this.type,

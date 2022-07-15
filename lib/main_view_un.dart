@@ -6,6 +6,9 @@ import './profile_view.dart';
 import './map_view.dart';
 import './chat_view.dart';
 import './start.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'model/place.dart';
 
 Position? location;
 
@@ -72,6 +75,8 @@ class _MainViewState extends State<MainView> {
     });
   }
 
+  List<String> types = ['supplies', 'accomodation', 'transport', 'social help'];
+
   @override
   Widget build(BuildContext context) {
     // const List<Widget> _widgetOptions = <Widget>[
@@ -80,12 +85,34 @@ class _MainViewState extends State<MainView> {
     //   ChatView(),
     //   ProfileView()
     // ];
-
     showAddingDialog(BuildContext context) {
+      TextEditingController nameController = new TextEditingController();
+      TextEditingController descryptionController = new TextEditingController();
+      TextEditingController numberController = new TextEditingController();
+      String typeController = "transport";
+      TextEditingController xController = new TextEditingController();
+      TextEditingController yController = new TextEditingController();
+      TextEditingController tagsController = new TextEditingController();
+
       // set up the button
       Widget saveButton = TextButton(
         child: Text("Save"),
-        onPressed: () {},
+        onPressed: () {
+          Place place = Place(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              descryption: descryptionController.text,
+              name: nameController.text,
+              type: typeController,
+              tags: [tagsController.text],
+              x: double.parse(xController.text),
+              y: double.parse(yController.text),
+              number: numberController.text);
+
+          FirebaseFirestore.instance
+              .collection('places')
+              .doc(DateTime.now().millisecondsSinceEpoch.toString())
+              .set(place.toJson());
+        },
       );
 
       // set up the AlertDialog
@@ -96,56 +123,62 @@ class _MainViewState extends State<MainView> {
             child: Column(
               children: [
                 TextField(
+                  controller: nameController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: 'Enter a Name',
                   ),
                 ),
                 TextField(
+                  controller: descryptionController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: 'Enter a Descryption',
                   ),
                 ),
                 TextField(
+                  controller: numberController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: 'Enter a Number',
                   ),
                 ),
                 TextField(
+                  controller: xController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: 'Enter a Latency',
                   ),
                 ),
                 TextField(
+                  controller: yController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: 'Enter a Longitude',
                   ),
                 ),
                 TextField(
+                  controller: tagsController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: 'Enter a Tags',
                   ),
                 ),
                 Row(children: [
-                  Text('Select Type'),
+                  Text('Select Type '),
                   DropdownButton<String>(
-                    items: <String>[
-                      'Supplies',
-                      'Accomodation',
-                      'Transport',
-                      'Social Help'
-                    ].map((String value) {
+                    //value: typeController,
+                    onChanged: (String? data) {
+                      setState(() {
+                        typeController = data as String;
+                      });
+                    },
+                    items: types.map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
                       );
                     }).toList(),
-                    onChanged: (_) {},
                   ),
                 ]),
               ],
