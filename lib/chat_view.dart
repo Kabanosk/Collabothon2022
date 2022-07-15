@@ -37,7 +37,6 @@ class _chatPanelState extends State<chatPanel> {
   var m = <ChatMessage>[];
   String uid2 = '';
 
-
   void displayChatWindow(int index, List<Map<String, String>> chatmates) {
     setState(() {
       currentlyDisplayed = index;
@@ -45,9 +44,8 @@ class _chatPanelState extends State<chatPanel> {
     _pushChatConversation(index, chatmates);
   }
 
-  Widget chatmateConversation(String chatmate, String uid,
-   BuildContext context) {
-
+  Widget chatmateConversation(
+      String chatmate, String uid, BuildContext context) {
     TextEditingController fieldController = TextEditingController();
 
     void onSend(ChatMessage message) {
@@ -87,7 +85,7 @@ class _chatPanelState extends State<chatPanel> {
               );
             } else {
               List<DocumentSnapshot> items = snapshot.data!.docs;
-               messages = items
+              messages = items
                   .map((i) =>
                       ChatMessage.fromJson(i.data()! as Map<dynamic, dynamic>))
                   .toList()
@@ -145,15 +143,12 @@ class _chatPanelState extends State<chatPanel> {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (context) {
-          return chatmateConversation(
-              chatmates[index]['name'] as String,
-              chatmates[index]['uid'] as String,
-              context);
+          return chatmateConversation(chatmates[index]['name'] as String,
+              chatmates[index]['uid'] as String, context);
         },
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {

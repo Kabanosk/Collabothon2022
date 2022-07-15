@@ -1,6 +1,8 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 
+bool staticLocationWroclaw = true;
+
 // Context for position - Currently not in use
 // /// Dart data model
 // class LocationValue {
@@ -64,5 +66,16 @@ Future<Position> determinePosition() async {
 
   // When we reach here, permissions are granted and we can
   // continue accessing the position of the device.
-  return await Geolocator.getCurrentPosition();
+  if (staticLocationWroclaw)
+    return Position(
+        longitude: 17.053464,
+        latitude: 51.110980,
+        timestamp: DateTime.now(),
+        accuracy: 0.0,
+        altitude: 0.0,
+        heading: 0.0,
+        speed: 0.0,
+        speedAccuracy: 0.0);
+  else
+    return await Geolocator.getCurrentPosition();
 }
