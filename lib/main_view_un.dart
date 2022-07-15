@@ -99,14 +99,16 @@ class _MainViewState extends State<MainView> {
         child: Text("Save"),
         onPressed: () {
           Place place = Place(
-              id: DateTime.now().millisecondsSinceEpoch.toString(),
-              descryption: descryptionController.text,
-              name: nameController.text,
-              type: typeController,
-              tags: [tagsController.text],
-              x: double.parse(xController.text),
-              y: double.parse(yController.text),
-              number: numberController.text);
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            descryption: descryptionController.text,
+            name: nameController.text,
+            type: typeController,
+            tags: tagsController.text.toLowerCase().split(','),
+            x: double.parse(xController.text),
+            y: double.parse(yController.text),
+            number: numberController.text,
+            uid: user.uid as String,
+          );
 
           FirebaseFirestore.instance
               .collection('places')

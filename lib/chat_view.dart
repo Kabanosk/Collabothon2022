@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:dash_chat/dash_chat.dart';
 
+final ChatUser user = ChatUser(
+  name: "Kojmas",
+  uid: "2",
+);
+
 class ChatView extends StatefulWidget {
   const ChatView({Key? key}) : super(key: key);
 
@@ -26,11 +31,6 @@ class chatPanel extends StatefulWidget {
 
 class _chatPanelState extends State<chatPanel> {
   int currentlyDisplayed = -1;
-
-  final ChatUser user = ChatUser(
-    name: "Kojmas",
-    uid: "2",
-  );
 
   // final ChatUser user = ChatUser(
   //   name: "Jan Papież 2",
