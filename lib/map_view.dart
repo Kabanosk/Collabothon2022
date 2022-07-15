@@ -207,7 +207,6 @@ class MapViewState extends State<MapView> {
         markerId: MarkerId(id),
         position: LatLng(X, Y),
         icon: BitmapDescriptor.defaultMarkerWithHue(typeToHue[type] as double),
-        //infoWindow: InfoWindow(title: name),
         onTap: () {
           _customInfoWindowController.addInfoWindow!(
               Container(
@@ -227,7 +226,7 @@ class MapViewState extends State<MapView> {
                       height: 100,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage('assets/images/komi.png'),
+                            image: AssetImage('assets/images/tlo.jpg'),
                             fit: BoxFit.fitWidth,
                             filterQuality: FilterQuality.high),
                         borderRadius: const BorderRadius.all(

@@ -28,7 +28,6 @@ class _CategoryViewState extends State<CategoryView> {
     getPlaces().then((data) {
       setState(() {
         _allPlaces = data;
-        // print(_allPlaces.first.tags);
       });
     });
     fetchLocation();
@@ -60,10 +59,12 @@ class _CategoryViewState extends State<CategoryView> {
   }
 
   void _showMultiSelect(int index) async {
-    // a list of selectable items
-    // these items can be hard-coded or dynamically fetched from a database/API
     final List<List<String>> _items = [
+<<<<<<< Updated upstream
       ['medicine', 'food', 'fuel', 'water', 'clothing'],
+=======
+      ['medicine', 'food', 'fuel', 'clothing'],
+>>>>>>> Stashed changes
       ['hostel', 'hotel', 'apartment', 'flat'],
       ['bus station', 'train station', 'airport'],
       ['charities', 'church', 'ua embassy', 'city council']
@@ -81,7 +82,6 @@ class _CategoryViewState extends State<CategoryView> {
       setState(() {
         _selectedItems = Set.from(results);
         globalSelectedItems = Set.from(results);
-        //_categoryView = false;
       });
     }
     print(globalSelectedItems);
@@ -204,7 +204,6 @@ class _CategoryViewState extends State<CategoryView> {
                               onChanged: checkInputViability,
                               keyboardType: TextInputType.numberWithOptions(
                                   decimal: false, signed: false),
-                              // inputFormatters: [BlacklistingTextInputFormatter(new RegExp('[\\-|\\ ]'))],
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText:
@@ -250,8 +249,7 @@ class _CategoryViewState extends State<CategoryView> {
                         style: const TextStyle(
                             fontSize: 18, color: Color(0xFF000000)),
                       ),
-                      onTap: () => _pushPlaceInfo(
-                          index)); // TO DO: clicking this should bring info about the location
+                      onTap: () => _pushPlaceInfo(index));
                 }));
   }
 }
@@ -279,12 +277,10 @@ class _MultiSelectState extends State<MultiSelect> {
     });
   }
 
-  // this function is called when the Cancel button is pressed
   void _cancel() {
     Navigator.pop(context);
   }
 
-// this function is called when the Submit button is tapped
   void _submit() {
     Navigator.pop(context, _selectedItems);
   }

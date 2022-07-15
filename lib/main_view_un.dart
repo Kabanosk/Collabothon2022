@@ -15,20 +15,6 @@ Position? location;
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       routes: {
-//         '/': (context) => MainView(),
-//         '/map': (context) => MapView(),
-//         '/profil': (context) => ProfileView(),
-//         '/chat': (context) => ChatView(),
-//       },
-//       title: 'Google Challenge',
-//     );
-//   }
-// }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -54,15 +40,7 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-  // int _selectedView = 0;
   bool locationAvailable = false;
-
-  // void changeView(int index) {
-  //   setState(() {
-  //     _selectedView = index;
-  //   });
-  // }
-
   List<String> screenOption = <String>[
     '/home/map',
     '/home/chat',
@@ -94,12 +72,6 @@ class _MainViewState extends State<MainView> {
 
   @override
   Widget build(BuildContext context) {
-    // const List<Widget> _widgetOptions = <Widget>[
-    //   // CategoryView(),
-    //   MapView(),
-    //   ChatView(),
-    //   ProfileView()
-    // ];
     showAddingDialog(BuildContext context) {
       TextEditingController nameController = new TextEditingController();
       TextEditingController descryptionController = new TextEditingController();
@@ -108,8 +80,6 @@ class _MainViewState extends State<MainView> {
       TextEditingController xController = new TextEditingController();
       TextEditingController yController = new TextEditingController();
       TextEditingController tagsController = new TextEditingController();
-
-      // set up the button
       Widget saveButton = TextButton(
         child: Text("Save"),
         onPressed: () {
@@ -184,7 +154,6 @@ class _MainViewState extends State<MainView> {
                 Row(children: [
                   Text('Select Type '),
                   DropdownButton<String>(
-                    //value: typeController,
                     onChanged: (String? data) {
                       setState(() {
                         typeController = data as String;
@@ -231,13 +200,7 @@ class _MainViewState extends State<MainView> {
           ]),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        //currentIndex: 3,
-        //backgroundColor: Colors.blueAccent,
         items: const <BottomNavigationBarItem>[
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.category),
-          //   label: 'Categories',
-          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.map),
             label: 'Map',
@@ -251,13 +214,10 @@ class _MainViewState extends State<MainView> {
             label: 'Profile',
           ),
         ],
-        // currentIndex: _selectedView,
-        // onTap: changeView,
         onTap: navigateToNewScreen,
         unselectedItemColor: Colors.blueAccent,
         selectedItemColor: Colors.blueAccent,
       ),
-      // body: _widgetOptions[_selectedView],
       body: CategoryView(),
     );
   }

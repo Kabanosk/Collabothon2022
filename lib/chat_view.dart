@@ -129,7 +129,7 @@ class _chatPanelState extends State<chatPanel> {
                   });
                 },
                 onLoadEarlier: () {
-                  print("laoding...");
+                  print("loading...");
                 },
                 shouldShowLoadEarlier: false,
                 showTraillingBeforeSend: true,

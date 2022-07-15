@@ -19,7 +19,7 @@ class _ProfileViewState extends State<ProfileView> {
       decoration: BoxDecoration(
           shape: BoxShape.circle,
           image: DecorationImage(
-            image: AssetImage('assets/images/pope.png'),
+            image: AssetImage('assets/images/logo.png'),
             fit: BoxFit.fill,
           )),
     );
@@ -37,7 +37,6 @@ class _ProfileViewState extends State<ProfileView> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Cool profile'),
-          // leading: Text(location!.longitude.toString()),
         ),
         body: Center(
             child: SingleChildScrollView(
