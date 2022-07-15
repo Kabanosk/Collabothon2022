@@ -25,6 +25,11 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
+  void LogOut() {
+    Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
   List<String> gmail = [user.name as String, '@gmail.com'];
 
   @override
@@ -56,7 +61,7 @@ class _ProfileViewState extends State<ProfileView> {
                         textStyle: TextStyle(fontSize: 17))),
                 TextButton(
                     child: Text('Logout'),
-                    onPressed: () => {},
+                    onPressed: () => {LogOut()},
                     style: TextButton.styleFrom(
                         padding: EdgeInsets.all(30),
                         textStyle: TextStyle(fontSize: 17))),

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:dash_chat/dash_chat.dart';
 
-final ChatUser user = ChatUser(
+ChatUser user = ChatUser(
   name: "Kojmas",
   uid: "2",
 );

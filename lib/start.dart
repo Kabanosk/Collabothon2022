@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collabothon/main_view_un.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:dash_chat/dash_chat.dart';
@@ -28,10 +29,16 @@ class loginPanel extends StatefulWidget {
 }
 
 class _loginPanelState extends State<loginPanel> {
+  void chooseLogin(int index, List<Map<String, String>> profiles) {
+    user.name = profiles[index]['name'];
+    user.uid = profiles[index]['uid'];
+    Navigator.pushNamed(context, '/home');
+  }
+
   @override
   Widget build(BuildContext) {
     return Scaffold(
-      appBar: AppBar(title: Row(children: [Text('Friend List')])),
+      appBar: AppBar(title: Row(children: [Text('Choose your profile')])),
       body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection('users').snapshots(),
           builder: (context, snapshot) {
@@ -45,22 +52,21 @@ class _loginPanelState extends State<loginPanel> {
               );
             } else {
               List<DocumentSnapshot> items = snapshot.data!.docs;
-              List<Map<String, String>> friends = items
+              List<Map<String, String>> profiles = items
                   .map((i) =>
                       {'name': i['name'] as String, 'uid': i['uid'] as String})
-                  .where((element) => element['uid'] != user.uid)
                   .toList();
-              return chatmatesList(friends);
+              return chatmatesList(profiles, chooseLogin);
             }
           }),
     );
   }
 }
 
-Widget chatmatesList(List<Map<String, String>> chatmates) {
+Widget chatmatesList(List<Map<String, String>> profiles, Function chooseLogin) {
   return Scaffold(
       body: ListView.builder(
-    itemCount: chatmates.length * 2,
+    itemCount: profiles.length * 2,
     padding: const EdgeInsets.all(16.0),
     itemBuilder: (context, i) {
       if (i.isOdd) return const Divider();
@@ -69,7 +75,7 @@ Widget chatmatesList(List<Map<String, String>> chatmates) {
 
       return ListTile(
           title: Text(
-            chatmates[index]['name']!,
+            profiles[index]['name']!,
             style: const TextStyle(fontSize: 18, color: Color(0xFF000000)),
           ),
           leading: const Icon(
@@ -77,7 +83,7 @@ Widget chatmatesList(List<Map<String, String>> chatmates) {
             color: Colors.blueAccent,
             semanticLabel: 'Filter categories',
           ),
-          onTap: () {});
+          onTap: () => chooseLogin(index, profiles));
     },
   ));
 }

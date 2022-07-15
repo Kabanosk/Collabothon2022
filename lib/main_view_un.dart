@@ -15,14 +15,29 @@ Position? location;
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       routes: {
+//         '/': (context) => MainView(),
+//         '/map': (context) => MapView(),
+//         '/profil': (context) => ProfileView(),
+//         '/chat': (context) => ChatView(),
+//       },
+//       title: 'Google Challenge',
+//     );
+//   }
+// }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/': (context) => MainView(),
-        '/map': (context) => MapView(),
-        '/profil': (context) => ProfileView(),
-        '/chat': (context) => ChatView(),
+        '/': (context) => LoginView(),
+        '/home': (conext) => MainView(),
+        '/home/map': (context) => MapView(),
+        '/home/profil': (context) => ProfileView(),
+        '/home/chat': (context) => ChatView(),
       },
       title: 'Google Challenge',
     );
@@ -49,9 +64,9 @@ class _MainViewState extends State<MainView> {
   // }
 
   List<String> screenOption = <String>[
-    '/map',
-    '/chat',
-    '/profil',
+    '/home/map',
+    '/home/chat',
+    '/home/profil',
   ];
 
   void navigateToNewScreen(int index) {
